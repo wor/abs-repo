@@ -1,0 +1,163 @@
+diff -ur ttaenc-3.4.1-src/ttaenc.c ttaenc-3.4.1-src-shntool/ttaenc.c
+--- ttaenc-3.4.1-src/ttaenc.c	2007-07-26 21:02:53.000000000 -0400
++++ ttaenc-3.4.1-src-shntool/ttaenc.c	2007-07-29 02:16:31.000000000 -0400
+@@ -609,6 +609,25 @@
+ 	}
+ }
+ 
++void fseek_cur(FILE *f,long bytes)
++{
++	long bytes_curr, bytes_total;
++	unsigned char buf[XFER_SIZE];
++
++	bytes_total = bytes;
++
++	bytes_curr = min(bytes_total,XFER_SIZE);
++
++	while (bytes_curr > 0) {
++		if (bytes_curr != fread(buf,1,bytes_curr,f))
++			tta_error(READ_ERROR, NULL);
++
++		bytes_total -= bytes_curr;
++
++		bytes_curr = min(bytes_total,XFER_SIZE);
++	}
++}
++
+ int compress(FILE *fdin, FILE *fdout) 
+ {
+ 	int *p, *data, tmp, prev;
+@@ -659,15 +678,19 @@
+ 		}
+ 
+ 		input_byte_count = output_byte_count = offset;
++
++		tmp = 0;
+ 	} else {
+-		fseek(fdin, 0, SEEK_SET);
+-		if (ferror(fdin)) tta_error(READ_ERROR, NULL);
++		if (!memcpy(&wave_hdr, &id3v2, sizeof(id3v2)))
++			tta_error(MEMORY_ERROR, NULL);
++
++		tmp = sizeof(id3v2);
+ 	}
+ 
+ 	// read WAVE header
+-	if (!fread(&wave_hdr, sizeof(wave_hdr), 1, fdin))
++	if (!fread((void *)&wave_hdr + tmp, sizeof(wave_hdr) - tmp, 1, fdin))
+ 		tta_error(READ_ERROR, NULL);
+-	input_byte_count += sizeof(wave_hdr);
++	input_byte_count += (sizeof(wave_hdr) - tmp);
+ 
+ 	wave_hdr.ChunkID = ENDSWAP_INT32(wave_hdr.ChunkID);
+ 	wave_hdr.ChunkSize = ENDSWAP_INT32(wave_hdr.ChunkSize);
+@@ -714,8 +737,7 @@
+ 	if (wave_hdr.Subchunk1Size > def_subchunk_size) {
+ 		unsigned int extra_len = wave_hdr.Subchunk1Size - def_subchunk_size;
+ 
+-		fseek(fdin, extra_len, SEEK_CUR);
+-		if (ferror(fdin)) tta_error(READ_ERROR, NULL);
++		fseek_cur(fdin, extra_len);
+ 		input_byte_count += extra_len;
+ 
+ 		fwprintf(stderr, L"Encode:\tskiped %ld extra format bytes\n", extra_len);
+@@ -738,8 +760,7 @@
+ 			return 1;
+ 		}
+ 
+-		fseek(fdin, subchunk_hdr.SubchunkSize, SEEK_CUR);
+-		if (ferror(fdin)) tta_error(READ_ERROR, NULL);
++		fseek_cur(fdin, subchunk_hdr.SubchunkSize);
+ 		input_byte_count += subchunk_hdr.SubchunkSize;
+ 
+ 		memcpy(chunk_id, &subchunk_hdr.SubchunkID, 4);
+@@ -886,6 +907,7 @@
+ 	unsigned int framelen, lastlen, fframes;
+ 	unsigned int framesize, st_size, *st;
+ 	unsigned char *data;
++	int tmp;
+ 
+ 	// clear statistics
+ 	input_byte_count = output_byte_count = 0;
+@@ -912,14 +934,21 @@
+ 		len += 10;
+ 		if (id3v2.flags & (1 << 4)) len += 10;
+ 
+-		fseek(fdin, len, SEEK_SET);
++		fseek_cur(fdin, len - sizeof(id3v2));
+ 		input_byte_count += len;
+-	} else fseek(fdin, 0, SEEK_SET);
++
++		tmp = 0;
++	} else {
++		if (!memcpy(&tta_hdr, &id3v2, sizeof(id3v2)))
++			tta_error(MEMORY_ERROR, NULL);
++
++		tmp = sizeof(id3v2);
++	}
+ 
+ 	// read TTA header
+-	if (!fread(&tta_hdr, sizeof(tta_hdr), 1, fdin))
++	if (!fread((void *)&tta_hdr + tmp, sizeof(tta_hdr) - tmp, 1, fdin))
+ 		tta_error(READ_ERROR, NULL);
+-	else input_byte_count += sizeof(tta_hdr);
++	else input_byte_count += (sizeof(tta_hdr) - tmp);
+ 
+ 	// check for supported formats
+ 	if (ENDSWAP_INT32(tta_hdr.TTAid) != TTA1_SIGN) {
+@@ -998,7 +1027,7 @@
+ }
+ 
+ int decompress(FILE *fdin, FILE *fdout) {
+-	int *p, *data, value;
++	int *p, *data, value, tmp;
+ 	unsigned int num_chan, data_size, byte_size, checksum;
+ 	unsigned int buffer_len, framelen, lastlen, fframes;
+ 	unsigned int k, depth, unary, binary = 0;
+@@ -1016,6 +1045,7 @@
+ 	// skip ID3V2 header
+ 	if (!fread(&id3v2, sizeof(id3v2), 1, fdin))
+ 		tta_error(READ_ERROR, NULL);
++
+ 	if (!memcmp(id3v2.id, "ID3", 3)) {
+ 		int len;
+ 
+@@ -1031,14 +1061,21 @@
+ 		len += 10;
+ 		if (id3v2.flags & (1 << 4)) len += 10;
+ 
+-		fseek(fdin, len, SEEK_SET);
++		fseek_cur(fdin, len - sizeof(id3v2));
+ 		input_byte_count += len;
+-	} else fseek(fdin, 0, SEEK_SET);
++
++		tmp = 0;
++	} else {
++		if (!memcpy(&tta_hdr, &id3v2, sizeof(id3v2)))
++			tta_error(MEMORY_ERROR, NULL);
++
++		tmp = sizeof(id3v2);
++	}
+ 
+ 	// read TTA header
+-	if (!fread(&tta_hdr, sizeof(tta_hdr), 1, fdin))
++	if (!fread((void *)&tta_hdr + tmp, sizeof(tta_hdr) - tmp, 1, fdin))
+ 		tta_error(READ_ERROR, NULL);
+-	else input_byte_count += sizeof(tta_hdr);
++	else input_byte_count += (sizeof(tta_hdr) - tmp);
+ 
+ 	// check for supported formats
+ 	if (ENDSWAP_INT32(tta_hdr.TTAid) != TTA1_SIGN) {
+diff -ur ttaenc-3.4.1-src/ttaenc.h ttaenc-3.4.1-src-shntool/ttaenc.h
+--- ttaenc-3.4.1-src/ttaenc.h	2007-07-26 21:20:15.000000000 -0400
++++ ttaenc-3.4.1-src-shntool/ttaenc.h	2007-07-29 00:07:27.000000000 -0400
+@@ -87,6 +87,9 @@
+ #define _MAX_FNAME	1024
+ #endif
+ 
++#define min(a,b) (((a)<(b))?(a):(b))
++#define XFER_SIZE 262144
++
+ #define LINE "------------------------------------------------------------"
+ 
+ #ifdef _BIG_ENDIAN

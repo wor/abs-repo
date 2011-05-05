@@ -1,0 +1,21 @@
+pkgname=ttaenc
+pkgver=3.4.1
+pkgrel=3
+pkgdesc="TrueAudio lossless codec for multichannel 8, 16 and 24 bits audio data."
+arch=('i686' 'x86_64')
+url="http://www.true-audio.com/"
+license=('GPL')
+source=("http://prdownloads.sourceforge.net/tta/$pkgname-$pkgver-src.tgz" "ttaenc-3.4.1-src-shntool.patch")
+md5sums=('c9ab8194984b34e7f7bf55d579c97f39'
+         '074f3a6ee6c12e7d198f91fdbaf358b9')
+
+build() {
+   cd "$srcdir/$pkgname-$pkgver-src"
+   patch -Np1 -i ../ttaenc-3.4.1-src-shntool.patch || return 1
+   make
+}
+
+package() {
+   cd "$srcdir/$pkgname-$pkgver-src"
+   install -Dm755 ttaenc "$pkgdir/usr/bin/ttaenc"
+}
