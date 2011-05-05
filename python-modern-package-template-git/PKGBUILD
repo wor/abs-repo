@@ -1,0 +1,48 @@
+# vim:set ts=2 sw=2 sts=2 et:
+# Maintainer: Your Name <youremail@domain.com>
+pkgname=python-modern-package-template-git
+pkgver=20110213
+pkgrel=1
+pkgdesc="Modern python package template."
+arch=(any)
+url=""
+license=('GPL')
+groups=()
+depends=('python' 'python-paste-script')
+makedepends=('git')
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=(!emptydirs)
+install=
+source=()
+noextract=()
+md5sums=() #generate with 'makepkg -g'
+
+_gitroot="https://github.com/srid/modern-package-template.git"
+_gitname="modern-package-template"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  #cd "$srcdir/$_gitname-build"
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+  python2 setup.py install --root=$pkgdir/ --optimize=1
+}
