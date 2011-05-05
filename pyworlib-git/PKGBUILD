@@ -1,0 +1,70 @@
+# Contributor: Esa Määttä <worros@gmail.com>
+pkgname=pyworlib-git
+_libname=wor
+pkgver=20110413
+pkgrel=1
+pkgdesc="General python modules."
+arch=(any)
+url=""
+license=('unknown')
+groups=()
+depends=('python')
+makedepends=('python' 'git')
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=(
+  #wor-${pkgver}.tar.gz
+  )
+noextract=()
+md5sums=('160af9424c94b502d6d4fe1ded6db895')
+
+
+_gitroot="/home/repo/pyworlib"
+_gitname="pyworlib"
+#_gitbranch="release"
+_gitbranch="master"
+
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    # check specific branch if specified
+    if [ "${_gitbranch}X" != "X" ]; then
+      git clone -b $_gitbranch $_gitroot $_gitname
+    else
+      git clone $_gitroot $_gitname
+    fi
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+}
+
+
+package() {
+  #cd "$srcdir/${_libname}-${pkgver}"
+  cd "$srcdir/$_gitname-build"
+
+  #./test.sh || { echo "Tests failed, aborting package building."; return 1; }
+  #python setup.py install --root=$pkgdir/ --install-scripts=/usr/bin --optimize=1
+  python setup.py install --root=$pkgdir/ --optimize=1
+  #install -D -m755 "${srcdir}/host_allower.init" "${pkgdir}/etc/rc.d/host_allower"
+
+  /bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+}
+
+# vim:set ts=2 sw=2 sts=2 et:
