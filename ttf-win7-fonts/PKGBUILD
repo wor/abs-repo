@@ -1,0 +1,23 @@
+# Contributor: mutlu_inek <mutlu_inek@yahoo.de>
+
+pkgname=ttf-win7-fonts
+pkgver=1
+pkgrel=1
+pkgdesc="Microsoft 7 True Type Fonts"
+url="http://www.microsoft.com/downloads/details.aspx?FamilyId=428D5727-43AB-4F24-90B7-A94784AF71A4&displaylang=en"
+license=(custom)
+arch=('any')
+depends=('fontconfig' 'xorg-font-utils')
+makedepends=()
+conflicts=()
+provides=()
+replaces=()
+install=$pkgname.install
+source=('win_7_fonts.tar.xz')
+
+build() {
+  mkdir -p $pkgdir/usr/share/fonts/TTF
+  install -m644 $startdir/src/win_7_fonts/*.{ttf,ttc} $startdir/pkg/usr/share/fonts/TTF
+  rm $pkgdir/usr/share/fonts/TTF/symbol.ttf # not very usefull font, also osx font package has this
+}
+md5sums=('bf97ad835c5f8f0ce8bf21213ccec04b')
