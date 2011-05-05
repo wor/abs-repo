@@ -1,0 +1,14 @@
+diff --git a/bgs.c b/bgs.c
+--- a/bgs.c
++++ b/bgs.c
+@@ -90,8 +90,8 @@
+ 		}
+ 		imlib_context_set_image(buffer);
+ 		if(center) {
+-			nw = (monitors[i].w - w) / 2;
+-			nh = (monitors[i].h - h) / 2;
++			nw = w;
++			nh = h;
+ 		}
+ 		else {
+ 			factor = MAX((double)w / monitors[i].w,
