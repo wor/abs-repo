@@ -1,0 +1,35 @@
+From d7c70ca7aee6a9396c3a3dcbfaead3c7cc558f78 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Esa=20M=C3=A4=C3=A4tt=C3=A4?= <esa.maatta@iki.fi>
+Date: Tue, 1 Feb 2011 13:25:10 +0200
+Subject: [PATCH] Remove existing pkg/ dir only if it's not empty.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This allows symbolic linking of the pkg directory. Without this patch the
+symbolic link to an another directory would be removed as existing pkg/
+directory.
+
+Signed-off-by: Esa Määttä <esa.maatta@iki.fi>
+---
+ scripts/makepkg.sh.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/makepkg.sh.in b/scripts/makepkg.sh.in
+index b1b1b75..bd2739b 100644
+--- a/scripts/makepkg.sh.in
++++ b/scripts/makepkg.sh.in
+@@ -2056,8 +2056,8 @@ if (( NOBUILD )); then
+ 	msg "$(gettext "Sources are ready.")"
+ 	exit 0 #E_OK
+ else
+-	# check for existing pkg directory; don't remove if we are repackaging
+-	if [[ -d $pkgdir ]] && (( ! REPKG || PKGFUNC || SPLITPKG )); then
++	# check for existing non empty pkg directory; don't remove if we are repackaging
++	if [[ -n $(ls -A "$pkgdir" 2>/dev/null) ]] && (( ! REPKG || PKGFUNC || SPLITPKG )); then
+ 		msg "$(gettext "Removing existing pkg/ directory...")"
+ 		rm -rf "$pkgdir"
+ 	fi
+-- 
+1.7.4
+
