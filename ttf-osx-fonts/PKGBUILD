@@ -1,0 +1,32 @@
+pkgname=ttf-osx-fonts
+pkgver=10.6
+pkgrel=3
+arch=(any)
+pkgdesc="Collection of macosx fonts."
+url=""
+license=("")
+depends=('xorg-fonts-encodings' 'xorg-font-utils' 'fontconfig')
+makedepends=('fontforge')
+#makedepends=('cabextract')
+#conflicts=('$_pkgname')
+#provides=("$_pkgname=$pkgver")
+
+install=${pkgname}.install
+source=(
+${pkgname}.tar.xz
+)
+
+build() {
+    mkdir -p "$pkgdir/usr/share/fonts/TTF"
+    mkdir -p "$pkgdir/usr/share/fonts/OTF"
+
+    cd $srcdir
+    find . -iname "*.dfont" -execdir font_conv '{}' \;
+    trcldir -d 5 -o
+    find . \( -iname "*.tt[fc]" -o -iname "*.otf" \) -execdir chmod 644 '{}' \;
+    find . -iname "*.tt[fc]" -execdir cp '{}' "$pkgdir/usr/share/fonts/TTF" \;
+    find . -iname "*.otf" -execdir cp '{}' "$pkgdir/usr/share/fonts/OTF" \;
+    cd "$pkgdir/usr/share/fonts/TTF"; rm *lastresort*.ttf
+}
+
+md5sums=('b9b741d4185692dddc72606d1e6e4bad')
