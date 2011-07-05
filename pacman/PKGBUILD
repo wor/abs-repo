@@ -1,8 +1,8 @@
-# $Id: PKGBUILD 120035 2011-04-18 16:49:22Z dan $
+# $Id: PKGBUILD 126847 2011-06-07 19:50:19Z dan $
 # Maintainer: Dan McGee <dan@archlinux.org>
 
 pkgname=pacman
-pkgver=3.5.2
+pkgver=3.5.3
 pkgrel=1
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz
         pacman.conf.x86_64
         makepkg.conf
         0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch)
-md5sums=('b4f1fdbc17100923071ebe8fe9377be5'
+md5sums=('c36c18ed4d8ec69c0ecb4f9684266901'
          'e99eb721b6b704f68c5f47468507c102'
          'f8b939d9b2beb79a0436961a2d707d7c'
          'a8684989d3dfad5a6e1bcf95af3e571b'
