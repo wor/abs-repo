@@ -8,13 +8,17 @@ url="http://lcamtuf.coredump.cx/"
 license="GPL"
 makedepends=('make')
 arch=('any')
-source=('http://lcamtuf.coredump.cx/soft/memfetch.tgz' 'memfetch_pagesize.patch')
+source=('http://lcamtuf.coredump.cx/soft/memfetch.tgz' \
+    'memfetch_pagesize.patch' \
+    'mffind.pl_mfetch_regex.patch')
 md5sums=('00dcc9e59de408dd0409835fcf866910'
-         'df8f11c26522ee0eccd150e05de80a33')
+         'df8f11c26522ee0eccd150e05de80a33'
+         'bf63a818d805c99d915e46b19dcccc42')
 
 build() {
   cd "${srcdir}/${pkgname}"
   patch -p0 "${srcdir}/${pkgname}"/memfetch.c < "${srcdir}"/memfetch_pagesize.patch
+  patch -p0 "${srcdir}/${pkgname}"/mffind.pl < "${srcdir}"/mffind.pl_mfetch_regex.patch
   make
   install -D -m755 "${srcdir}/${pkgname}"/memfetch "${pkgdir}"/usr/bin/memfetch
   install -D -m755 "${srcdir}/${pkgname}"/mffind.pl "${pkgdir}"/usr/bin/memfetch_find

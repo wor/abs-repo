@@ -1,0 +1,11 @@
+--- memfetch/mffind.pl	2003-10-20 21:06:43.000000000 +0300
++++ memfetch/mffind.pl	2011-07-08 18:11:17.000000000 +0300
+@@ -19,7 +19,7 @@
+ my @files;
+ open(LISTFILE, '<mfetch.lst') or die "Cannot open mfetch.lst: $!\n";
+ my $listFile = <LISTFILE>;
+-while($listFile =~ /\]\s+(.*?):.*?range (.*?) /sg) {
++while($listFile =~ /\n\[\d+\]\s+(.*?):.*?range (.*?) /sg) {
+   push(@files, [ $1, $2 ]);
+ }
+ close(LISTFILE);
