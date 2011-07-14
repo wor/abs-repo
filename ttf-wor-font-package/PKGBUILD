@@ -2,7 +2,7 @@
 
 pkgname=ttf-wor-font-package
 pkgver=1.1
-pkgrel=2
+pkgrel=3
 arch=('any')
 pkgdesc="Collection of some usefull fonts."
 url=""
@@ -19,7 +19,7 @@ source=(
 'http://www.fontsquirrel.com/fonts/download/Sansation'
 'http://www.daltonmaag.com/Aller_Std_Family.zip'
 'http://www.fontsquirrel.com/fonts/download/Crimson_text'
-'http://www.fontsquirrel.com/fonts/download/Cantarell'
+#'http://www.fontsquirrel.com/fonts/download/Cantarell' in google web fonts
 'http://www.fontsquirrel.com/fonts/download/Comfortaa'
 #'http://kojipkgs.fedoraproject.org/packages/urw-fonts/2.4/9.fc13/noarch/urw-fonts-2.4-9.fc13.noarch.rpm'
 'http://www.ms-studio.com/FontSales/AnonymousPro-1.002.zip'
@@ -74,7 +74,6 @@ md5sums=('8b56dde057468f8b1ad06869d743b74c'
          '14eb25fbe0418e5b881c26ad4a77c3b5'
          'bb3f1980c8d62d43d16c9c293eea5e0a'
          '51ae27728755e6011caf095c2fe5e5ef'
-         '804f18eb29bbb1dcc3b2ecc1380b1cc3'
          '5e3fe5f9b662fa78defb70cb126b39dd'
          'bb5141b20b9d69b3190be03e5706c8b7'
          '138ed3a36774af3e3ab285988de93f61'
