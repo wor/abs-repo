@@ -1,0 +1,115 @@
+diff -Naur ./aggregate.c ../aggregate-1.0.2-patched/aggregate.c
+--- ./aggregate.c	2002-04-28 16:47:39.000000000 +0300
++++ ../aggregate-1.0.2-patched/aggregate.c	2011-07-16 10:51:23.000000000 +0300
+@@ -31,8 +31,6 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ 
+-vanessa_logger_t *aggregate_vl;
+-
+ int main(int argc, char **argv){
+   ip_address_t ip1_dec;
+   ip_address_t ip2_dec;
+@@ -47,16 +45,6 @@
+   extern int errno;
+   extern options_t opt;
+ 
+-  if((aggregate_vl=vanessa_logger_openlog_filehandle(
+-    stderr, 
+-    "aggregate", 
+-    LOG_DEBUG,
+-    0
+-   ))==NULL){
+-    fprintf(stderr, "main: vanessa_logger_openlog_filehandle\n");
+-    exit(-1);
+-  }
+-
+   options(argc, argv);
+ 
+   cidr_generate_pow_2_lookup();
+@@ -143,7 +131,5 @@
+     opt.output_format
+   );
+ 
+-  vanessa_logger_closelog(aggregate_vl);
+-
+   return(0);
+ }
+diff -Naur ./configure.in ../aggregate-1.0.2-patched/configure.in
+--- ./configure.in	2002-08-15 10:19:26.000000000 +0300
++++ ../aggregate-1.0.2-patched/configure.in	2011-07-16 10:47:46.000000000 +0300
+@@ -33,19 +33,6 @@
+     "**********************************************************************"
+   ) ;\
+ )
+-AC_CHECK_LIB(
+-  vanessa_logger,
+-  vanessa_logger_closelog,
+-  :,
+-  AC_MSG_ERROR(
+-    ""
+-    "**********************************************************************"
+-    "* aggregate requires the vanessa_logger generic logging library"
+-    "* available from"
+-    "* ftp://ftp.verge.net.au/pub/vanessa/vanessa_logger/ and mirrors."
+-    "**********************************************************************"
+-  )
+-)
+ 
+ AC_CHECK_SIZEOF(char)
+ AC_CHECK_SIZEOF(short)
+diff -Naur ./log.h ../aggregate-1.0.2-patched/log.h
+--- ./log.h	2002-04-28 16:47:39.000000000 +0300
++++ ../aggregate-1.0.2-patched/log.h	2011-07-16 11:00:58.000000000 +0300
+@@ -27,15 +27,24 @@
+ #ifndef SYSLOG_BERT
+ #define SYSLOG_BERT
+ 
+-#include <vanessa_logger.h>
++#include <stdio.h>
++#include <stdarg.h>
++
+ #include <syslog.h>
+ #include <string.h>
+ #include <errno.h>
+ 
+-extern vanessa_logger_t *aggregate_vl;
++static void simple_logger(int priority, const char *fmt, ... )
++{
++    priority = 0; // not use for now
++    va_list args;
++    va_start(args, fmt);
++    vfprintf(stderr, fmt, args);
++    va_end(args);
++}
+ 
+ #define AGGREGATE_LOG(priority, fmt, args...) \
+-  vanessa_logger_log(aggregate_vl, priority, fmt, ## args);
++  simple_logger(priority, fmt, ## args);
+ 
+ #define AGGREGATE_INFO(s) AGGREGATE_LOG(LOG_INFO, s);
+ 
+diff -Naur ./Makefile.am ../aggregate-1.0.2-patched/Makefile.am
+--- ./Makefile.am	2002-02-24 05:29:04.000000000 +0200
++++ ../aggregate-1.0.2-patched/Makefile.am	2011-07-16 11:21:30.000000000 +0300
+@@ -24,7 +24,7 @@
+ 
+ aggregate_DEPENDENCIES =
+ 
+-aggregate_LDADD = -lvanessa_logger -lpopt
++aggregate_LDADD = -lpopt
+ 
+ clean-local:
+ 	rm -f build-stamp
+diff -Naur ./Makefile.in ../aggregate-1.0.2-patched/Makefile.in
+--- ./Makefile.in	2002-08-15 10:28:11.000000000 +0300
++++ ../aggregate-1.0.2-patched/Makefile.in	2011-07-16 11:21:21.000000000 +0300
+@@ -75,7 +75,7 @@
+ 
+ aggregate_DEPENDENCIES = 
+ 
+-aggregate_LDADD = -lvanessa_logger -lpopt
++aggregate_LDADD = -lpopt
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+ CONFIG_HEADER = config.h
