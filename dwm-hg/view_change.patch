@@ -1,0 +1,19 @@
+diff -r ba7d976f74d3 dwm.c
+--- a/dwm.c	Fri Mar 25 14:06:46 2011 +0000
++++ b/dwm.c	Wed Mar 30 01:02:51 2011 +0300
+@@ -1919,6 +1919,15 @@
+ updatestatus(void) {
+ 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
+ 		strcpy(stext, "dwm-"VERSION);
++	/* for now a quick hack to enable view chaning by setting root name */
++	else if(strncmp(stext, "$$$", 3) == 0) {
++		char temp[sizeof stext];
++		strncpy(temp, stext, sizeof stext);
++		unsigned int i = (unsigned int)atoi(stext+3);
++		Arg a = {.ui = 1 << i};
++		view(&a);
++		strcpy(stext, temp);
++	}
+ 	drawbar(selmon);
+ }
+ 
