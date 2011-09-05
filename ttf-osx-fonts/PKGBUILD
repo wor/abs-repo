@@ -1,6 +1,6 @@
 pkgname=ttf-osx-fonts
-pkgver=10.6
-pkgrel=3
+pkgver=10.7
+pkgrel=1
 arch=(any)
 pkgdesc="Collection of macosx fonts."
 url=""
@@ -22,11 +22,14 @@ build() {
 
     cd $srcdir
     find . -iname "*.dfont" -execdir font_conv '{}' \;
-    trcldir -d 5 -o
+    trcldir -o -s "\s" "_" # remove spaces from font names
     find . \( -iname "*.tt[fc]" -o -iname "*.otf" \) -execdir chmod 644 '{}' \;
     find . -iname "*.tt[fc]" -execdir cp '{}' "$pkgdir/usr/share/fonts/TTF" \;
     find . -iname "*.otf" -execdir cp '{}' "$pkgdir/usr/share/fonts/OTF" \;
-    cd "$pkgdir/usr/share/fonts/TTF"; rm *lastresort*.ttf
+    cd "$pkgdir/usr/share/fonts/TTF";
+
+    # Last resort font isn't usefull
+    rm -f *[lL]ast[rR]esort*.ttf
 }
 
-md5sums=('b9b741d4185692dddc72606d1e6e4bad')
+md5sums=('e24f13f8906c5b7c92ef510b3b3883af')
