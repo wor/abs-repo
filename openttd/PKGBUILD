@@ -1,0 +1,46 @@
+# $Id: PKGBUILD 48779 2011-06-05 15:15:50Z vegai $
+# Maintainer: Vesa Kaihlavirta <vegai@iki.fi>
+
+pkgname=openttd
+pkgver=1.1.1
+pkgrel=1
+pkgdesc='An engine for running Transport Tycoon Deluxe.'
+arch=('i686' 'x86_64')
+url='http://www.openttd.org'
+license=('GPL')
+depends=('libpng' 'sdl' 'icu' 'fontconfig' 'lzo2' 'hicolor-icon-theme' 'desktop-file-utils')
+install=openttd.install
+optdepends=('openttd-opengfx: free graphics' 
+            'openttd-opensfx: free soundset'
+            'openttd-nullsfx: allow playing without opensfx'
+            'timidity++: midi music'
+            'timidity-freepats: midi music (instruments)')
+source=("http://binaries.openttd.org/releases/${pkgver}/${pkgname}-${pkgver}-source.tar.xz"
+ttd_data.tar.gz)
+
+build() {
+  cd ${pkgname}-${pkgver} 
+
+ ./configure \
+    --prefix-dir=/usr \
+    --binary-name=${pkgname} \
+    --binary-dir=bin \
+    --data-dir=share/${pkgname} \
+    --install-dir=${pkgdir} \
+    --doc-dir=share/doc/${pkgname} \
+    --menu-name="OpenTTD" \
+    --personal-dir=.${pkgname}
+
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  make install
+  cd $pkgdir/usr/share/openttd
+  tar --no-overwrite-dir -xzf $srcdir/ttd_data.tar.gz
+}
+
+md5sums=('825f6274bd46a1d56f4e95ef25a325ca'
+         '9e9795c5007540791520bd3fd0387411')
