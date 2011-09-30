@@ -2,7 +2,7 @@
 # Maintainer: Vesa Kaihlavirta <vegai@iki.fi>
 
 pkgname=openttd
-pkgver=1.1.1
+pkgver=1.1.3
 pkgrel=1
 pkgdesc='An engine for running Transport Tycoon Deluxe.'
 arch=('i686' 'x86_64')
