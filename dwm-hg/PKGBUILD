@@ -3,8 +3,8 @@
 # TODO: make custom config file replacer more dynamic
 
 pkgname=dwm-hg
-pkgver=1575
-pkgrel=2
+pkgver=1584
+pkgrel=1
 arch=('x86_64' 'i686')
 pkgdesc="A dynamic window manager for X11."
 url="http://www.suckless.org/dwm"
@@ -12,8 +12,8 @@ makedepends=('libx11' 'mercurial' 'patch')
 license=('MIT/X')
 source=('view_change.patch' 'dwm-5.9.1-current_desktop.patch' 'dwm-5.9.1-netwmdesktop.patch')
 md5sums=('3f4e6c058e499d86d9b67878908a1a14'
-         '49d6872e5a3848c576c9f6265c5a9db9'
-         '4df14d7ab7a8ce1af3b7ca938afec12f')
+         '1b8f914f09a9e2142e9142ceb2961380'
+         'd030ebed71f1ca878ca1973b8c50fee5')
 #export pkgver=1507
 
 # custom config file in $startdir that replaces dwm default config.h
