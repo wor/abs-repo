@@ -1,16 +1,17 @@
 diff --git a/dwm.c b/dwm.c
 --- a/dwm.c
 +++ b/dwm.c
-@@ -58,7 +58,7 @@
- enum { CurNormal, CurResize, CurMove, CurLast };        /* cursor */
- enum { ColBorder, ColFG, ColBG, ColLast };              /* color */
+@@ -60,7 +60,8 @@
  enum { NetSupported, NetWMName, NetWMState,
--       NetWMFullscreen, NetActiveWindow,
-+       NetWMFullscreen, NetActiveWindow, NetWMDesktop,
-        NetNumberOfDesktops, NetCurrentDesktop, NetLast };     /* EWMH atoms */
+        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+        NetWMWindowTypeDialog,
+-       NetNumberOfDesktops, NetCurrentDesktop, NetLast };     /* EWMH atoms */
++       NetNumberOfDesktops, NetCurrentDesktop,
++       NetWMDesktop, NetLast };     /* EWMH atoms */
  enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
  enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-@@ -231,6 +231,7 @@
+        ClkClientWin, ClkRootWin, ClkLast };             /* clicks */
+@@ -234,6 +235,7 @@
  static void unfocus(Client *c, Bool setfocus);
  static void unmanage(Client *c, Bool destroyed);
  static void unmapnotify(XEvent *e);
@@ -18,7 +19,7 @@ diff --git a/dwm.c b/dwm.c
  static void updatecurrenddesktop(void);
  static Bool updategeom(void);
  static void updatebarpos(Monitor *m);
-@@ -1164,6 +1165,8 @@
+@@ -1176,6 +1178,8 @@
  	arrange(c->mon);
  	XMapWindow(dpy, c->win);
  	focus(NULL);
@@ -27,7 +28,7 @@ diff --git a/dwm.c b/dwm.c
  }
  
  void
-@@ -1459,6 +1462,7 @@
+@@ -1473,6 +1477,7 @@
  	detachstack(c);
  	c->mon = m;
  	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
@@ -35,15 +36,15 @@ diff --git a/dwm.c b/dwm.c
  	attach(c);
  	attachstack(c);
  	focus(NULL);
-@@ -1570,6 +1574,7 @@
- 	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
- 	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
- 	netatom[NetWMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
-+	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
+@@ -1588,6 +1593,7 @@
+ 	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
  	netatom[NetNumberOfDesktops] = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
  	netatom[NetCurrentDesktop] = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
++	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
  	/* init cursors */
-@@ -1648,6 +1653,7 @@
+ 	cursor[CurNormal] = XCreateFontCursor(dpy, XC_left_ptr);
+ 	cursor[CurResize] = XCreateFontCursor(dpy, XC_sizing);
+@@ -1664,6 +1670,7 @@
  tag(const Arg *arg) {
  	if(selmon->sel && arg->ui & TAGMASK) {
  		selmon->sel->tags = arg->ui & TAGMASK;
@@ -51,7 +52,7 @@ diff --git a/dwm.c b/dwm.c
  		focus(NULL);
  		arrange(selmon);
  	}
-@@ -1824,6 +1830,14 @@
+@@ -1836,6 +1843,14 @@
  }
  
  void

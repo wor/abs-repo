@@ -45,7 +45,7 @@ static const Bool showbar                 = True;     /* False means no bar */
 static const Bool topbar                  = True;     /* False means bottom bar */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "www", "4", "5", "6", "7", "8", "9", "0", "Q", "W", "E" };
+static const char *tags[] = { "1", "2", "www", "4", "5", "6", "7", "8", "9", "0", "Q", "W", "E", "A" };
 
 static const Rule rules[] = {
     /* class                instance    title       tags mask   isfloating   monitor */
@@ -72,6 +72,7 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
+static const int nmaster      = 1;    /* number of clients in master area */
 static const Bool resizehints = True; /* True means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
@@ -129,6 +130,8 @@ static Key keys[] = {
     { MODKEY,               XK_b,           togglebar,      {0} },
     { MODKEY,               XK_j,           focusstack,     {.i = +1 } },
     { MODKEY,               XK_k,           focusstack,     {.i = -1 } },
+    { MODKEY,               XK_i,           incnmaster,     {.i = +1 } },
+    { MODKEY,               XK_d,           incnmaster,     {.i = -1 } },
     { MODKEY,               XK_h,           setmfact,       {.f = -0.05} },
     { MODKEY,               XK_l,           setmfact,       {.f = +0.05} },
 
@@ -159,6 +162,7 @@ static Key keys[] = {
     TAGKEYS(                XK_q,                           10)
     TAGKEYS(                XK_w,                           11)
     TAGKEYS(                XK_e,                           12)
+    TAGKEYS(                XK_a,                           13)
     { 0,                    XK_Print,       spawn,          {.v = screenshot } },
     { MODKEY,               XK_Home,        spawn,          {.v = workmail } },
     { 0,                    XK_Pause,       spawn,          SHCMD(MONSLEEP) },
