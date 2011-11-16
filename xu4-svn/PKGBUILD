@@ -1,0 +1,61 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# See http://wiki.archlinux.org/index.php/VCS_PKGBUILD_Guidelines
+# for more information on packaging from SVN sources.
+
+# Contributor: Your Name <youremail@domain.com>
+pkgname=xu4-svn
+pkgver=2991
+pkgrel=2
+pkgdesc="Remake of the game ultima 4."
+arch=(x86_64 i686)
+url="http://xu4.sourceforge.net/"
+license=('GPL')
+groups=()
+depends=('timidity++' 'sdl' 'sdl_mixer' 'libxml2')
+makedepends=('subversion' 'timidity++' 'sdl' 'sdl_mixer' 'libxml2' 'imagemagick')
+#provides=()
+#conflicts=()
+#replaces=()
+#backup=()
+#options=()
+#install=
+source=('http://www.moongates.com/u4/upgrade/files/u4upgrad.zip' \
+    'http://www.ultima-universe.com/downloads/ultima4v101.zip')
+noextract=('u4upgrad.zip' 'ultima4v101.zip')
+md5sums=('4ce9c9cd9dab111275e0ebfde7a482c4'
+         '9e49af437eb85024c8d1c2c3ae871c07')
+
+_svntrunk="http://xu4.svn.sourceforge.net/svnroot/xu4/trunk/u4"
+_svnmod="xu4"
+
+build() {
+  cd "$srcdir"
+
+  if [ -d $_svnmod/.svn ]; then
+    (cd $_svnmod && svn up -r $pkgver)
+  else
+    svn co $_svntrunk --config-dir ./ -r $pkgver $_svnmod
+  fi
+
+  msg "SVN checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_svnmod-build"
+  cp -r "$srcdir/$_svnmod" "$srcdir/$_svnmod-build"
+  cd "$srcdir/$_svnmod-build"
+
+  #
+  # BUILD
+  #
+  #./autogen.sh
+  #./configure --prefix=/usr
+  cd src
+  make || return 1
+  make prefix="${pkgdir}/usr" install
+  install -D "${srcdir}/u4upgrad.zip" "${pkgdir}/usr/lib/u4/u4upgrad.zip"
+  install -D "${srcdir}/ultima4v101.zip" "${pkgdir}/usr/lib/u4/UltimaIV.zip"
+}
