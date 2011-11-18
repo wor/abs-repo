@@ -1,4 +1,5 @@
 #!/bin/bash
+#Copyright (c) 2011, Esa Määttä <esa.maatta_iki.fi>
 #Copyright (c) 2009, Cosmin Stejerean (offbytwo)
 #
 #Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,20 +30,11 @@
 #                          https://github.com/offbytwo/git-hg/commit/89f14dac9f341a22f72d981892c803bbe9859e74
 
 
-if which python2 >&/dev/null; then
-  PYTHON=python2
-fi
-
-set -e
-
-GITHG_HOME=/usr/share/git/
-HG_FAST_EXPORT=$GITHG_HOME/fast-export-hg/hg-fast-export.sh
-
-function git-current-branch {
+git-current-branch() {
     git branch | egrep '^[*]' | sed 's/^\* \(.\)/\1/'
 }
 
-function check-hg-fast-export {
+check-hg-fast-export() {
     if [ \! -x $HG_FAST_EXPORT ]; then
         echo "error: executable not found, $HG_FAST_EXPORT"
         echo '  (one possible fix: run "git submodule update --init" in git-hg repo)'
@@ -50,7 +42,7 @@ function check-hg-fast-export {
     fi
 }
 
-function git-hg-clone {
+git-hg-clone() {
     check-hg-fast-export
 
     if [[ $1 == "--force" ]]; then
@@ -59,12 +51,12 @@ function git-hg-clone {
     fi
     HG_REMOTE=$1
 
-    if [ -z "$2" ]; then
+    if [[ -z "$2" ]]; then
         CHECKOUT=$(basename $1)
     else
         CHECKOUT=$2
     fi
-    if [ -a $CHECKOUT ]; then
+    if [[ -a $CHECKOUT ]]; then
         echo error: $CHECKOUT exists
         exit 1
     fi
@@ -83,7 +75,7 @@ function git-hg-clone {
     )
 }
 
-function git-hg-fetch {
+git-hg-fetch() {
     check-hg-fast-export
     hg -R .git/hgcheckout pull
     (
@@ -93,52 +85,68 @@ function git-hg-fetch {
     git fetch hg
 }
 
-function git-hg-pull {
+git-hg-pull() {
     git-hg-fetch
     git merge hg/$(git-current-branch)
 }
 
-function git-hg-checkout {
+git-hg-checkout() {
     git-hg-fetch
     git checkout hg/$1 -b $1
 }
 
-function git-hg-push {
+git-hg-push() {
     HG_REPO=$1
     hg convert . .git/hgcheckout
     hg -R .git/hgcheckout push $HG_REPO
 }
 
-function usage {
+
+usage() {
     echo "To clone a mercurial repo run:"
     echo "  clone <path/to/mercurial/repo> [local_checkout_path]"
-    echo ""
+    echo
     echo " if that fails (due to unnamed heads) try git-hg clone --force <path/to/mercurial/repo> [local_checkout_path]"
-    echo ""
+    echo
     echo "To work with a cloned mercurial repo use: "
     echo "  fetch                   fetch latest branches from mercurial"
     echo "  pull                    fetch and merge the into the current branch"
     echo "  checkout branch_name    checkout a mercurial branch"
 }
 
-case "$1" in
-    clone)
-        git-hg-clone $2 $3 $4
-        ;;
-    fetch)
-        git-hg-fetch
-        ;;
-    pull)
-        git-hg-pull
-        ;;
-    checkout)
-        git-hg-checkout $2
-        ;;
-    push)
-        git-hg-push $2
-        ;;
-    *)
-        usage
-        exit 1
-        ;;
-esac
+main() {
+    # Where is this needed
+    #if which python2 >&/dev/null; then
+    #  PYTHON=python2
+    #fi
+
+    # Exit immediately on error
+    set -e
+
+    local GITHG_HOME=/usr/share/git/
+    local HG_FAST_EXPORT="${GITHG_HOME}/fast-export-hg/hg-fast-export.sh"
+
+    case "${1}" in
+        clone)
+            git-hg-clone "${2}" "${3}" "${4}"
+            ;;
+        fetch)
+            git-hg-fetch
+            ;;
+        pull)
+            git-hg-pull
+            ;;
+        checkout)
+            git-hg-checkout "${2}"
+            ;;
+        push)
+            git-hg-push "${2}"
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+main "${@}"
