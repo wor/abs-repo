@@ -1,0 +1,144 @@
+#!/bin/bash
+#Copyright (c) 2009, Cosmin Stejerean (offbytwo)
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in
+#all copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#THE SOFTWARE.
+#
+# Orginal from:
+#   http://offbytwo.com/git-hg/
+#   https://github.com/offbytwo/git-hg
+#
+# This is a fork of commit cosmin authored September 20, 2011
+#                          89f14dac9f341a22f72d981892c803bbe9859e74
+#                          parents fcbd3f6296 + c5ba7b427a
+#                          https://github.com/offbytwo/git-hg/commit/89f14dac9f341a22f72d981892c803bbe9859e74
+
+
+if which python2 >&/dev/null; then
+  PYTHON=python2
+fi
+
+set -e
+
+GITHG_HOME=/usr/share/git/
+HG_FAST_EXPORT=$GITHG_HOME/fast-export-hg/hg-fast-export.sh
+
+function git-current-branch {
+    git branch | egrep '^[*]' | sed 's/^\* \(.\)/\1/'
+}
+
+function check-hg-fast-export {
+    if [ \! -x $HG_FAST_EXPORT ]; then
+        echo "error: executable not found, $HG_FAST_EXPORT"
+        echo '  (one possible fix: run "git submodule update --init" in git-hg repo)'
+        exit 1
+    fi
+}
+
+function git-hg-clone {
+    check-hg-fast-export
+
+    if [[ $1 == "--force" ]]; then
+        FORCE="--force"
+        shift
+    fi
+    HG_REMOTE=$1
+
+    if [ -z "$2" ]; then
+        CHECKOUT=$(basename $1)
+    else
+        CHECKOUT=$2
+    fi
+    if [ -a $CHECKOUT ]; then
+        echo error: $CHECKOUT exists
+        exit 1
+    fi
+    git init $CHECKOUT
+    (
+        cd $CHECKOUT
+        hg clone -U $HG_REMOTE .git/hgcheckout
+        git init --bare .git/hgremote
+        (
+            cd .git/hgremote
+            $HG_FAST_EXPORT -r ../hgcheckout $FORCE
+        )
+        git remote add hg .git/hgremote
+        git fetch hg
+        git pull hg master
+    )
+}
+
+function git-hg-fetch {
+    check-hg-fast-export
+    hg -R .git/hgcheckout pull
+    (
+        cd .git/hgremote
+        $HG_FAST_EXPORT
+    )
+    git fetch hg
+}
+
+function git-hg-pull {
+    git-hg-fetch
+    git merge hg/$(git-current-branch)
+}
+
+function git-hg-checkout {
+    git-hg-fetch
+    git checkout hg/$1 -b $1
+}
+
+function git-hg-push {
+    HG_REPO=$1
+    hg convert . .git/hgcheckout
+    hg -R .git/hgcheckout push $HG_REPO
+}
+
+function usage {
+    echo "To clone a mercurial repo run:"
+    echo "  clone <path/to/mercurial/repo> [local_checkout_path]"
+    echo ""
+    echo " if that fails (due to unnamed heads) try git-hg clone --force <path/to/mercurial/repo> [local_checkout_path]"
+    echo ""
+    echo "To work with a cloned mercurial repo use: "
+    echo "  fetch                   fetch latest branches from mercurial"
+    echo "  pull                    fetch and merge the into the current branch"
+    echo "  checkout branch_name    checkout a mercurial branch"
+}
+
+case "$1" in
+    clone)
+        git-hg-clone $2 $3 $4
+        ;;
+    fetch)
+        git-hg-fetch
+        ;;
+    pull)
+        git-hg-pull
+        ;;
+    checkout)
+        git-hg-checkout $2
+        ;;
+    push)
+        git-hg-push $2
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac

@@ -1,0 +1,63 @@
+# Maintainer: Esa Määttä <esa.maatta@iki.if>
+pkgname=fast-export-hg-git
+pkgver=20111118
+pkgrel=1
+pkgdesc="Fast-export git repositories to hg repositories."
+arch=(any)
+url="http://repo.or.cz/w/fast-export.git"
+license=('MIT')
+depends=('mercurial' 'git' 'python2')
+makedepends=()
+provides=('git-hg')
+source=('python2.patch' 'git-hg')
+md5sums=('8127e775139bf58153183b1b8be78e92'
+         'df847e15d1ea25fb9e440f17eebf7a99')
+
+
+_gitroot="git://repo.or.cz/fast-export.git"
+#_gitroot="ssh://repo.or.cz/srv/git/fast-export.git"
+_gitname="$pkgname"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  #
+  # Apply patches
+  #
+
+  msg "Patching.."
+  # Use python2 in hg-fast-export.sh
+  git apply ../python2.patch
+  msg "Patching done!"
+}
+
+
+package() {
+  # Install git-hg helper script
+  #mkdir -p "$pkgdir/usr/lib/git-core/"
+  #install -m 755 "$srcdir/git-hg" "$pkgdir/usr/lib/git-core/"
+
+  mkdir -m 755 -p ${pkgdir}/usr/bin
+  install -D -m 755 ${srcdir}/git-hg ${pkgdir}/usr/bin/
+
+  # Install hg part of the fast-export
+  mkdir -p "$pkgdir/usr/share/git/fast-export-hg"
+  cp "$srcdir/$_gitname-build"/hg* "$pkgdir/usr/share/git/fast-export-hg"
+}
+
+# vim:set ts=2 sts=2 sw=2 et:
