@@ -1,0 +1,11 @@
+--- scripts/xdg-open	2011-11-25 13:27:58.000000000 +0200
++++ scripts/xdg-open	2011-11-25 13:29:07.000000000 +0200
+@@ -476,7 +476,7 @@
+ 
+             if [ x"$browser_with_arg" = x"$browser" ]; then
+                 "$browser" "$1";
+-            else eval '$browser_with_arg'$xdg_redirect_output;
++            else eval "$browser_with_arg"$xdg_redirect_output;
+             fi
+ 
+             if [ $? -eq 0 ]; then
