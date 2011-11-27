@@ -28,6 +28,7 @@
 #                          89f14dac9f341a22f72d981892c803bbe9859e74
 #                          parents fcbd3f6296 + c5ba7b427a
 #                          https://github.com/offbytwo/git-hg/commit/89f14dac9f341a22f72d981892c803bbe9859e74
+#                          https://github.com/offbytwo/git-hg/blob/89f14dac9f341a22f72d981892c803bbe9859e74/bin/git-hg
 
 
 git-current-branch() {
