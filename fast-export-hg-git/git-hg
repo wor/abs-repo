@@ -30,45 +30,35 @@
 #                          https://github.com/offbytwo/git-hg/commit/89f14dac9f341a22f72d981892c803bbe9859e74
 #                          https://github.com/offbytwo/git-hg/blob/89f14dac9f341a22f72d981892c803bbe9859e74/bin/git-hg
 
+# TODO: Add --quiet param for hg fast export, this means add proper parameter reading.
+
 
 git-current-branch() {
     git branch | egrep '^[*]' | sed 's/^\* \(.\)/\1/'
 }
 
-check-hg-fast-export() {
-    if [ \! -x $HG_FAST_EXPORT ]; then
-        echo "error: executable not found, $HG_FAST_EXPORT"
-        echo '  (one possible fix: run "git submodule update --init" in git-hg repo)'
-        exit 1
-    fi
-}
-
 git-hg-clone() {
-    check-hg-fast-export
+    [[ ${1} == "--force" ]] && { HG_FAST_EXPORT_PARAMS="${1}"; shift; }
 
-    if [[ $1 == "--force" ]]; then
-        FORCE="--force"
-        shift
-    fi
-    HG_REMOTE=$1
+    HG_REMOTE="${1}"
 
-    if [[ -z "$2" ]]; then
-        CHECKOUT=$(basename $1)
+    if [[ -z "${2}" ]]; then
+        CHECKOUT="$(basename ${1})"
     else
-        CHECKOUT=$2
+        CHECKOUT="${2}"
     fi
-    if [[ -a $CHECKOUT ]]; then
-        echo error: $CHECKOUT exists
+    if [[ -a ${CHECKOUT} ]]; then
+        echo "error: \"${CHECKOUT}\" exists"
         exit 1
     fi
-    git init $CHECKOUT
+    git init "${CHECKOUT}"
     (
-        cd $CHECKOUT
-        hg clone -U $HG_REMOTE .git/hgcheckout
+        cd "${CHECKOUT}"
+        hg clone -U "${HG_REMOTE}" .git/hgcheckout
         git init --bare .git/hgremote
         (
             cd .git/hgremote
-            $HG_FAST_EXPORT -r ../hgcheckout $FORCE
+            ${HG_FAST_EXPORT} -r ../hgcheckout ${HG_FAST_EXPORT_PARAMS}
         )
         git remote add hg .git/hgremote
         git fetch hg
@@ -77,29 +67,28 @@ git-hg-clone() {
 }
 
 git-hg-fetch() {
-    check-hg-fast-export
     hg -R .git/hgcheckout pull
     (
         cd .git/hgremote
-        $HG_FAST_EXPORT
+        ${HG_FAST_EXPORT}
     )
     git fetch hg
 }
 
 git-hg-pull() {
     git-hg-fetch
-    git merge hg/$(git-current-branch)
+    git merge "hg/$(git-current-branch)"
 }
 
 git-hg-checkout() {
     git-hg-fetch
-    git checkout hg/$1 -b $1
+    git checkout "hg/${1}" -b "${1}"
 }
 
 git-hg-push() {
-    HG_REPO=$1
+    HG_REPO="${1}"
     hg convert . .git/hgcheckout
-    hg -R .git/hgcheckout push $HG_REPO
+    hg -R .git/hgcheckout push "${HG_REPO}"
 }
 
 
@@ -116,16 +105,16 @@ usage() {
 }
 
 main() {
-    # Where is this needed
-    #if which python2 >&/dev/null; then
-    #  PYTHON=python2
-    #fi
-
     # Exit immediately on error
     set -e
 
-    local GITHG_HOME=/usr/share/git/
+    # hg-fast-export.sh is used
+    local GITHG_HOME="/usr/share/git"
     local HG_FAST_EXPORT="${GITHG_HOME}/fast-export-hg/hg-fast-export.sh"
+    if ! [[ -x ${HG_FAST_EXPORT} ]]; then
+        echo "Error: executable not found, ${HG_FAST_EXPORT}" 1>&2
+        return 1
+    fi
 
     case "${1}" in
         clone)
@@ -145,7 +134,7 @@ main() {
             ;;
         *)
             usage
-            exit 1
+            return 1
             ;;
     esac
 }
