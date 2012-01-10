@@ -1,0 +1,18 @@
+# Contributor: Tom Wambold <tom5760@gmail.com>
+pkgname=python2-posix_ipc
+pkgver=0.9.3
+pkgrel=1
+pkgdesc="Gives access to POSIX inter-process semaphores, shared memory and message queues."
+arch=('i686' 'x86_64')
+url="http://semanchuk.com/philip/posix_ipc/"
+license=('BSD')
+depends=('python2')
+makedepends=('python2')
+source=(http://semanchuk.com/philip/posix_ipc/posix_ipc-$pkgver.tar.gz)
+md5sums=('f0ab54a88e2a18beb012a5d1631826ac')
+
+build() {
+  cd $srcdir/posix_ipc-$pkgver
+  python2 setup.py install --root=$startdir/pkg
+  install -D LICENSE $startdir/pkg/usr/share/licenses/$pkgname/LICENSE
+}
