@@ -19,7 +19,7 @@ diff --git a/scripts/makepkg.sh.in b/scripts/makepkg.sh.in
 index b1b1b75..bd2739b 100644
 --- a/scripts/makepkg.sh.in
 +++ b/scripts/makepkg.sh.in
-@@ -2056,8 +2056,8 @@ if (( NOBUILD )); then
+@@ -2348,8 +2348,8 @@ if (( NOBUILD )); then
  	msg "$(gettext "Sources are ready.")"
  	exit 0 #E_OK
  else
@@ -27,7 +27,7 @@ index b1b1b75..bd2739b 100644
 -	if [[ -d $pkgdir ]] && (( ! REPKG || PKGFUNC || SPLITPKG )); then
 +	# check for existing non empty pkg directory; don't remove if we are repackaging
 +	if [[ -n $(ls -A "$pkgdir" 2>/dev/null) ]] && (( ! REPKG || PKGFUNC || SPLITPKG )); then
- 		msg "$(gettext "Removing existing pkg/ directory...")"
+ 		msg "$(gettext "Removing existing %s directory...")" "pkg/"
  		rm -rf "$pkgdir"
  	fi
 -- 
