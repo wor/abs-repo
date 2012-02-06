@@ -1,16 +1,15 @@
-# $Id: PKGBUILD 114393 2011-03-13 08:22:31Z andyrtr $
+# $Id: PKGBUILD 148684 2012-02-05 11:46:48Z ibiru $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: Brice Carpentier <brice@daknet.org>
 
 pkgname=cairo
 pkgver=1.10.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Cairo vector graphics library"
 arch=(i686 x86_64)
 license=('LGPL' 'MPL')
 url="http://cairographics.org/"
-depends=('libpng>=1.4.0' 'libxrender' 'fontconfig>=2.8.0' 'pixman>=0.18.4' 'glib2>=2.24.0')
-makedepends=('pkgconfig')
+depends=('libpng' 'libxrender' 'fontconfig' 'pixman' 'glib2' 'sh')
 options=('!libtool')
 source=(http://cairographics.org/releases/${pkgname}-${pkgver}.tar.gz
         cairo-respect-fontconfig.patch
@@ -29,7 +28,11 @@ build() {
 	--disable-static \
 	--enable-tee
   make
-  make check || /bin/true # 248 Passed, 65 Failed [2 crashed, 8 expected], 28 Skipped
+}
+
+check() {
+  cd "$srcdir/$pkgname-$pkgver"
+  #make check || /bin/true # 248 Passed, 65 Failed [2 crashed, 8 expected], 28 Skipped
 }
 
 package() {
