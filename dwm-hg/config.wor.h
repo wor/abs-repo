@@ -92,7 +92,7 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-#define MONSLEEP "sleep 1 && exec xlock -mode blank -dpmssuspend 5 -endCmd 'xset dpms 0 900 0'"
+#define MONSLEEP "sleep 1 && exec xlock -mode blank -dpmssuspend 10 -endCmd 'xset dpms 0 900 0'"
 
 /* commands */
 static const char *dmenucmd[]   = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
@@ -109,15 +109,15 @@ static const char *mixermasslower[]  = { "avolt", "-s", "-1", NULL };
 static const char *mixermasllower[] = { "avolt", "-s", "-5", NULL };
 static const char *mixermasshigher[]  = { "avolt", "-s", "+1", NULL };
 static const char *mixermaslhigher[] = { "avolt", "-s", "+5", NULL };
-static const char *musinfo[] = { "command_player", "info", NULL };
-static const char *mustoggle[] = { "command_player", "toggle", NULL };
-static const char *musstop[]   = { "command_player", "stop", NULL };
-static const char *musprev[]   = { "command_player", "prev", NULL };
-static const char *musnext[]   = { "command_player", "next", NULL };
-static const char *musseekfs[]   = { "command_player", "seek", "10", NULL };
-static const char *musseekbs[]   = { "command_player", "seek", "-10", NULL };
-static const char *musseekfl[]   = { "command_player", "seek", "30", NULL };
-static const char *musseekbl[]   = { "command_player", "seek", "-30", NULL };
+static const char *musinfo[] = { "cmdp", "info", NULL };
+static const char *mustoggle[] = { "cmdp", "toggle", NULL };
+static const char *musstop[]   = { "cmdp", "stop", NULL };
+static const char *musprev[]   = { "cmdp", "prev", NULL };
+static const char *musnext[]   = { "cmdp", "next", NULL };
+static const char *musseekfs[]   = { "cmdp", "seek", "10", NULL };
+static const char *musseekbs[]   = { "cmdp", "seek", "-10", NULL };
+static const char *musseekfl[]   = { "cmdp", "seek", "30", NULL };
+static const char *musseekbl[]   = { "cmdp", "seek", "-30", NULL };
 
 static Key keys[] = {
     /* modifier             key             function        argument */ \
