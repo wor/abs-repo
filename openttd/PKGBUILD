@@ -1,8 +1,9 @@
-# $Id: PKGBUILD 63690 2012-02-05 12:07:04Z ibiru $
+# $Id: PKGBUILD 64046 2012-02-08 23:19:32Z lcarlier $
 # Maintainer: Vesa Kaihlavirta <vegai@iki.fi>
 
 pkgname=openttd
-pkgver=1.1.5
+pkgver=1.2.0beta4
+_realpkgver=1.2.0-beta4
 pkgrel=1
 pkgdesc='An engine for running Transport Tycoon Deluxe.'
 arch=('i686' 'x86_64')
@@ -15,11 +16,11 @@ optdepends=('openttd-opengfx: free graphics'
             'openttd-nullsfx: allow playing without opensfx'
             'timidity++: midi music'
             'timidity-freepats: midi music (instruments)')
-source=("http://binaries.openttd.org/releases/${pkgver}/${pkgname}-${pkgver}-source.tar.xz"
+source=("http://binaries.openttd.org/releases/${_realpkgver}/${pkgname}-${_realpkgver}-source.tar.xz"
 ttd_data.tar.gz)
 
 build() {
-  cd ${pkgname}-${pkgver} 
+  cd ${pkgname}-${_realpkgver}
 
  ./configure \
     --prefix-dir=/usr \
@@ -35,12 +36,12 @@ build() {
 }
 
 package() {
-  cd ${pkgname}-${pkgver}
+  cd ${pkgname}-${_realpkgver}
 
   make install
   cd $pkgdir/usr/share/openttd
   tar --no-overwrite-dir -xzf $srcdir/ttd_data.tar.gz
 }
 
-md5sums=('aea731c9f87c53955269446d580ee19e'
+md5sums=('41c18120a3f0d77c8f3ca11e2b6730e7'
          '9e9795c5007540791520bd3fd0387411')
