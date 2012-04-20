@@ -8,8 +8,8 @@
 
 # Contributor: Your Name <youremail@domain.com>
 pkgname=xu4-svn
-pkgver=2991
-pkgrel=2
+pkgver=3004
+pkgrel=1
 pkgdesc="Remake of the game ultima 4."
 arch=(x86_64 i686)
 url="http://xu4.sourceforge.net/"

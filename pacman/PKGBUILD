@@ -24,9 +24,9 @@ source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz
         makepkg.conf
         0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch)
 md5sums=('387965c7125e60e5f0b9ff3b427fe0f9'
-         '4605b3490d4fd1e5c6e20db17da9ded6'
-         'a0edf98ad1845a4c7d902a86638d5d2d'
-         'db051afbd12993b7743ccd4d58668499'
+         'e99eb721b6b704f68c5f47468507c102'
+         'f8b939d9b2beb79a0436961a2d707d7c'
+         'a8684989d3dfad5a6e1bcf95af3e571b'
          '1a85b31adfbd188839d5195539732d17')
 
 # keep an upgrade path for older installations

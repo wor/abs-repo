@@ -1,7 +1,7 @@
 # Contributor: Esa Määttä <worros@gmail.com>
 pkgname=pyworlib-git
 _libname=wor
-pkgver=20120131
+pkgver=20120312
 pkgrel=1
 pkgdesc="General python modules."
 arch=(any)

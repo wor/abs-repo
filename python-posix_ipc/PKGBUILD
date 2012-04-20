@@ -9,7 +9,7 @@ license=('BSD')
 depends=('python')
 makedepends=('python')
 source=(http://semanchuk.com/philip/posix_ipc/posix_ipc-$pkgver.tar.gz)
-md5sums=('af93e7a59b0b89819bdd1ed5660cb55e')
+md5sums=('f0ab54a88e2a18beb012a5d1631826ac')
 
 build() {
   cd $srcdir/posix_ipc-$pkgver

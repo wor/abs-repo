@@ -1,6 +1,6 @@
 # Maintainer: Esa Määttä <esa.maatta@iki.if>
 pkgname=fast-export-hg-git
-pkgver=20111118
+pkgver=20120131
 pkgrel=1
 pkgdesc="Fast-export git repositories to hg repositories."
 arch=(any)
@@ -11,7 +11,7 @@ makedepends=()
 provides=('git-hg')
 source=('python2.patch' 'git-hg')
 md5sums=('8127e775139bf58153183b1b8be78e92'
-         'df847e15d1ea25fb9e440f17eebf7a99')
+         'a63688906b27da09f225ed8f7b9fbfa0')
 
 
 _gitroot="git://repo.or.cz/fast-export.git"
