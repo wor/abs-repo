@@ -96,7 +96,7 @@ package_gcc-libs46()
   depends=('glibc>=2.14')
   install=gcc-libs46.install
 
-  #cd gcc-build
+  cd gcc-build
   make -j1 -C $CHOST/libgcc DESTDIR=${pkgdir} install-shared
   for lib in libmudflap libgomp libstdc++-v3/src; do
     make -j1 -C $CHOST/$lib DESTDIR=${pkgdir} install-toolexeclibLTLIBRARIES
@@ -128,7 +128,7 @@ package_gcc46()
   groups=('base-devel')
   install=gcc46.install
 
-  #cd gcc-build
+  cd gcc-build
   
   # unfortunately it is much, much easier to install the lot and clean-up the mess...
   make -j1 DESTDIR=${pkgdir} install
