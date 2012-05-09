@@ -1,7 +1,7 @@
-# Contributor: Esa Määttä <worros@gmail.com>
-pkgname=pyworlib-git
+# Contributor: Esa Määttä <wor@iki.fi>
+pkgname=('python-worlib-git' 'python2-worlib-git')
 _libname=wor
-pkgver=20120423
+pkgver=20120509
 pkgrel=1
 pkgdesc="General python modules."
 arch=(any)
@@ -9,24 +9,20 @@ url=""
 license=('unknown')
 groups=()
 depends=('python')
-makedepends=('python' 'git' 'python-distribute' 'python-nose' 'python-posix_ipc')
+makedepends=('python' 'python2' 'git' 'python-distribute' 'python2-distribute' 'python-nose' 'python-posix_ipc')
 optdepends=()
 provides=()
 conflicts=()
-replaces=()
 backup=()
 options=()
 install=
-source=(
-  #wor-${pkgver}.tar.gz
-  )
+source=()
 noextract=()
 md5sums=('160af9424c94b502d6d4fe1ded6db895')
 
 
 _gitroot="/home/wor/repo/pyworlib"
 _gitname="pyworlib"
-#_gitbranch="release"
 _gitbranch="master"
 
 
@@ -55,16 +51,29 @@ build() {
 }
 
 
-package() {
-  #cd "$srcdir/${_libname}-${pkgver}"
-  cd "$srcdir/$_gitname-build"
+package_python-worlib-git() {
+  replaces=('pyworlib-git')
+  conflicts=('pyworlib-git')
 
-  #./test.sh || { echo "Tests failed, aborting package building."; return 1; }
-  #python setup.py install --root=$pkgdir/ --install-scripts=/usr/bin --optimize=1
+  cd "$srcdir/$_gitname-build"
 
   . dev.sh
   ./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
   python setup.py install --root=$pkgdir/ --optimize=1
+  #install -D -m755 "${srcdir}/host_allower.init" "${pkgdir}/etc/rc.d/host_allower"
+
+  /bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+}
+
+package_python2-worlib-git() {
+  replaces=('pyworlib2-git')
+  conflicts=('pyworlib2-git')
+
+  cd "$srcdir/$_gitname-build"
+
+  . dev.sh
+  ./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
+  python2 setup.py --no-console-scripts install --root=$pkgdir/ --optimize=1
   #install -D -m755 "${srcdir}/host_allower.init" "${pkgdir}/etc/rc.d/host_allower"
 
   /bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
