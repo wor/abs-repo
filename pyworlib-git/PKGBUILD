@@ -1,7 +1,7 @@
 # Contributor: Esa Määttä <worros@gmail.com>
 pkgname=pyworlib-git
 _libname=wor
-pkgver=20120312
+pkgver=20120423
 pkgrel=1
 pkgdesc="General python modules."
 arch=(any)
@@ -9,7 +9,7 @@ url=""
 license=('unknown')
 groups=()
 depends=('python')
-makedepends=('python' 'git' 'python-distribute')
+makedepends=('python' 'git' 'python-distribute' 'python-nose' 'python-posix_ipc')
 optdepends=()
 provides=()
 conflicts=()
@@ -24,7 +24,7 @@ noextract=()
 md5sums=('160af9424c94b502d6d4fe1ded6db895')
 
 
-_gitroot="/home/repo/pyworlib"
+_gitroot="/home/wor/repo/pyworlib"
 _gitname="pyworlib"
 #_gitbranch="release"
 _gitbranch="master"
