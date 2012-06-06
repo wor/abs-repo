@@ -1,25 +1,28 @@
+# Maintainer: josephgbr <rafael.f.f1@gmail.com>
 # Contributor: Mark Smith <markzzzsmith@yahoo.com.au>
 pkgname=aggregate
 pkgver=1.0.2
-pkgrel=2
-pkgdesc="aggregate is a tool for aggregating IPv4 CIDR networks"
+pkgrel=3
+pkgdesc="A tool for aggregating IPv4 CIDR networks"
+arch=('i686' 'x86_64')
 url="http://www.vergenet.net/linux/aggregate/"
 license="GPL"
-#makedepends=('autoconf' 'automake' 'gcc' 'glibc' 'popt' 'vanessa_logger')
-makedepends=('automake' 'gcc' 'glibc' 'popt')
+depends=('popt')
 depends=('glibc' 'popt')
-source=("http://www.vergenet.net/linux/aggregate/download/$pkgname-$pkgver.tar.gz" "no-vanessa-logger.patch")
+source=("${url}/download/$pkgname-$pkgver.tar.gz"
+        "no-vanessa-logger.patch")
 md5sums=('ca4401a4bdfaa7710fb5c5af98f00b3b'
          '2f416c5bef4048f2b43f0063152c3b0b')
-arch=('i686' 'x86_64')
 
 build() {
-  cd $startdir/src/$pkgname-$pkgver
+  cd $pkgname-$pkgver
   patch -i ../no-vanessa-logger.patch
+  autoreconf -i # This is needed as no-vanessa-logger patch modifies configure.in
+  ./configure --prefix=/usr --mandir=/usr/share/man
+  make
+}
 
-  autoconf
-  ./configure --prefix=/usr
-  make || return 1
-  make DESTDIR=$startdir/pkg install
-
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
 }
