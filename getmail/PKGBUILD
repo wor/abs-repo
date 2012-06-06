@@ -1,9 +1,9 @@
-# $Id: PKGBUILD 156315 2012-04-16 20:06:14Z andyrtr $
+# $Id: PKGBUILD 159466 2012-05-24 16:52:04Z andyrtr $
 # Maintainer: Andreas Radke <andyrtr@archlinux.org>
 # Committer: Manolis Tzanidakis <manolis@archlinux.org>
 
 pkgname=getmail
-pkgver=4.26.0
+pkgver=4.27.0
 pkgrel=1
 pkgdesc="A POP3 mail retriever with reliable Maildir and command delivery."
 arch=(any)
@@ -11,7 +11,7 @@ url="http://pyropus.ca/software/getmail"
 license=("GPL")
 depends=('python2')
 source=($pkgname-$pkgver.tar.gz)
-md5sums=('e04c5bab9167f5ada121ae5bebd4b079')
+md5sums=('34315dde13d994ccc38ab8e054d6c773')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
