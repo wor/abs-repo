@@ -105,6 +105,7 @@ static const char *allmail[]    = { "/home/wor/bin/get_mail", NULL };
 static const char *workmail[]   = { "getmail", "-n", "--rcfile", "getmailrc_itut", "--rcfile", "getmailrc_ltut", NULL };
 static const char *screensaver[] = { "xlock", "-mode",  "xjack", NULL };
 static const char *mixertoggle[]  = { "avolt", "-t", NULL };
+static const char *mixertoggleout[]  = { "avolt", "-tf", NULL };
 static const char *mixermasslower[]  = { "avolt", "-s", "-1", NULL };
 static const char *mixermasllower[] = { "avolt", "-s", "-5", NULL };
 static const char *mixermasshigher[]  = { "avolt", "-s", "+1", NULL };
@@ -176,7 +177,8 @@ static Key keys[] = {
 #if XKEYS
     { 0,                    XF86XK_Mail,            spawn,  {.v = allmail } },
     { MODKEY,               XF86XK_Mail,            spawn,  {.v = workmail } },
-    { 0,                    XF86XK_AudioMute,       spawn,  {.v = mixertoggle } },
+    { 0,                    XF86XK_AudioMute,       spawn,  {.v = mixertoggleout } },
+    { MODKEY,               XF86XK_AudioMute,       spawn,  {.v = mixertoggle } },
     { 0,                    XF86XK_AudioLowerVolume,spawn,  {.v = mixermasslower } },
     { MODKEY,               XF86XK_AudioLowerVolume,spawn,  {.v = mixermasllower } },
     { 0,                    XF86XK_AudioRaiseVolume,spawn,  {.v = mixermasshigher } },
