@@ -1,5 +1,6 @@
 # Maintainer: josephgbr <rafael.f.f1@gmail.com>
 # Contributor: Mark Smith <markzzzsmith@yahoo.com.au>
+# Contributor: Esa Määttä <wor@iki.fi>
 pkgname=aggregate
 pkgver=1.0.2
 pkgrel=3
