@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 159503 2012-05-25 16:04:09Z andyrtr $
+# $Id: PKGBUILD 160047 2012-05-28 14:14:28Z andyrtr $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=xdg-utils
 pkgver=1.1.0
 _gitdate=20120520
-pkgrel=0.${_gitdate}
+pkgrel=2.${_gitdate}
 pkgdesc="Command line tools that assist applications with a variety of desktop integration tasks"
 arch=('any')
 url="http://portland.freedesktop.org/"
@@ -18,21 +18,18 @@ optdepends=('kdebase-runtime: for KDE support in xdg-open'
             'pcmanfm: for LXDE support in xdg-open'
             'perl-file-mimeinfo: for generic support in xdg-open')
 source=(ftp://ftp.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.${_gitdate}.tar.gz  # last git commit 2012-03-10 13:55:24 (GMT) allow DESKTOP_SESSION='Xfce Session' to match xfce
-		xfce-detection.diff
 		eval_browser.patch)
 md5sums=('4e37d65322dbc4763e85b8ba461f919b'
-         '061c85755b9f3ca8a8cc847518b6be3d'
          '74ac755501409ba15634c2c2a37d966c')
 
 build() {
 	cd ${srcdir}/${pkgname}-5be359a49d4d8dc3c5f814ab89b8422ad522d837
-	# disable patch for now, the grep upstream issue is solved as fixed and lots of xfce related commits should have fixed this
-	#patch -p0 -i "${srcdir}"/xfce-detection.diff
 	# eval with '$var' doesn't work if BROWSER variable contains ' chars
 	patch -p0 -i "${srcdir}"/eval_browser.patch
 	./configure --prefix=/usr --mandir=/usr/share/man
-	make -C scripts
-	make
+	make scripts-clean -C scripts # needed if it's a git snapshot
+	make man scripts -C scripts # needed if it's a git snapshot
+#	make # for release builds
 }
 
 package() {
