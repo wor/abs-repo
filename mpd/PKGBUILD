@@ -1,4 +1,4 @@
-# $Id: PKGBUILD 160342 2012-06-01 11:41:45Z bisson $
+# $Id: PKGBUILD 163157 2012-07-08 09:32:05Z ibiru $
 # Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Contributor: Angel Velasquez <angvp@archlinux.org>
 # Contributor: Andrea Scarpino <andrea@archlinux.org>
@@ -6,8 +6,8 @@
 # Contributor: Ben <ben@benmazer.net>
 
 pkgname=mpd
-pkgver=0.16.8
-pkgrel=3
+pkgver=0.17
+pkgrel=2
 pkgdesc='Flexible, powerful, server-side application for playing music'
 url='http://mpd.wikia.com/wiki/Music_Player_Daemon_Wiki'
 license=('GPL')
@@ -20,8 +20,10 @@ source=("http://downloads.sourceforge.net/musicpd/${pkgname}-${pkgver}.tar.bz2"
         'tmpfiles.d'
         'rc.d'
         'mpd.conf.d')
-sha1sums=('878f3ce82d4f00f6cbad63a625b2c0274c4a704a'
-          '3777bdb4fff4b7911be3b1242aabae9d2912ef18')
+sha1sums=('36201f32ca5729b62b0e6cbddb19ade20ee3f7d7'
+          'f4d5922abb69abb739542d8e93f4dfd748acdad7'
+          'eb7621b69b4a3f6337a788c319bd10e4b2e59904'
+          'dc37b0dfe2698ea0cb0dccd6a9496751bc71da4f')
 
 backup=('etc/mpd.conf' 'etc/conf.d/mpd')
 install=install
@@ -65,13 +67,3 @@ package() {
 
 	install -Dm644 "${srcdir}/mpd.conf.d" "${pkgdir}/etc/conf.d/mpd"
 }
-sha1sums=('878f3ce82d4f00f6cbad63a625b2c0274c4a704a'
-          'eb7621b69b4a3f6337a788c319bd10e4b2e59904'
-          'dc37b0dfe2698ea0cb0dccd6a9496751bc71da4f')
-sha1sums=('977c80db8dc64e65c2bc523f69a9a7a71adca2b1'
-          'eb7621b69b4a3f6337a788c319bd10e4b2e59904'
-          'dc37b0dfe2698ea0cb0dccd6a9496751bc71da4f')
-sha1sums=('977c80db8dc64e65c2bc523f69a9a7a71adca2b1'
-          'f4d5922abb69abb739542d8e93f4dfd748acdad7'
-          'eb7621b69b4a3f6337a788c319bd10e4b2e59904'
-          'dc37b0dfe2698ea0cb0dccd6a9496751bc71da4f')
