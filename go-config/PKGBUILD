@@ -1,15 +1,15 @@
 # Maintainer: NAME <EMAIL>
 
 pkgname=go-config
-pkgver=1.2.3
-pkgrel=1
+pkgver=0.9.3
+pkgrel=2
 pkgdesc="PACKAGE DESCRIPTION"
 arch=('x86_64' 'i686')
 url="http://SERVER/$pkgname/"
 license=('MIT')
 makedepends=('go' 'git')
 options=('!strip' '!emptydirs')
-_gourl=github.com/kless/goconfig/config
+_gourl=github.com/wor/goconfig/config
 
 build() {
   cd "$srcdir"
