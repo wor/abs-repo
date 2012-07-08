@@ -3,7 +3,7 @@
 # Committer: Manolis Tzanidakis <manolis@archlinux.org>
 
 pkgname=getmail
-pkgver=4.27.0
+pkgver=4.30.2
 pkgrel=1
 pkgdesc="A POP3 mail retriever with reliable Maildir and command delivery."
 arch=(any)
@@ -11,7 +11,7 @@ url="http://pyropus.ca/software/getmail"
 license=("GPL")
 depends=('python2')
 source=($pkgname-$pkgver.tar.gz)
-md5sums=('34315dde13d994ccc38ab8e054d6c773')
+md5sums=('393dcb8cc09731907043fb5dc5bdc889')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
