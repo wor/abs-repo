@@ -53,7 +53,8 @@ package() {
   cd "$srcdir"
 
   source /etc/profile.d/go.sh
-  export GOROOT="$GOPATH"
+  # XXX: what is the site dir, go cannot find packages installed there?
+  export GOROOT="/usr/lib/go"
 
   # Package go package files
   for f in "$srcdir/build/go/pkg/"* "$srcdir/build/pkg/"*; do
