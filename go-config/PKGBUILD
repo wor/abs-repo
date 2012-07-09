@@ -1,4 +1,4 @@
-# Maintainer: NAME <EMAIL>
+# Maintainer: Esa Määttä <wor@iki.fi>
 
 pkgname=go-config
 pkgver=0.9.3
@@ -9,11 +9,12 @@ url="http://SERVER/$pkgname/"
 license=('MIT')
 makedepends=('go' 'git')
 options=('!strip' '!emptydirs')
+#_gourl=SERVER.NET/PATH/MODULENAME
 _gourl=github.com/wor/goconfig/config
 
 build() {
   cd "$srcdir"
-  source /etc/profile.d/go.sh
+  export GOROOT=/usr/lib/go
 
   rm -rf build
   mkdir -p build/go
@@ -31,7 +32,8 @@ build() {
     ln -s "$f"
   done
 
-  platform=`for f in "$GOROOT/pkg/"*; do echo \`basename $f\`; done|grep linux`
+  # XXX: platform selection doesn't work for i686
+  platform=`for f in "$GOROOT/pkg/"*; do echo \`basename $f\`; done|grep linux_amd`
 
   rm "$platform"
   mkdir "$platform"
@@ -49,7 +51,9 @@ build() {
 
 package() {
   cd "$srcdir"
+
   source /etc/profile.d/go.sh
+  export GOROOT="$GOPATH"
 
   # Package go package files
   for f in "$srcdir/build/go/pkg/"* "$srcdir/build/pkg/"*; do
