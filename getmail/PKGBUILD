@@ -23,5 +23,9 @@ package() {
   # fix some broken shebang calls
   sed -i -e "s|#![ ]*/usr/bin/env python|#!/usr/bin/env python2|" $pkgdir/usr/lib/python2.7/site-packages/getmailcore/__init__.py
   sed -i -e "s|#![ ]*/usr/bin/env python2.3|#!/usr/bin/env python2|" $(find -L $pkgdir -name '*.py')
+  # Fix man page permissions
+  chmod 0644  $pkgdir/usr/share/man/man1/*
+  # Fix doc permissions
+  chmod 0644  $pkgdir/usr/share/doc/$pkgname-$pkgver/*
 }
 md5sums=('02b2213ecdbd95d95f93323435e30a11')
