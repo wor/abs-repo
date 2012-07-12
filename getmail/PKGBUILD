@@ -3,7 +3,7 @@
 # Committer: Manolis Tzanidakis <manolis@archlinux.org>
 
 pkgname=getmail
-pkgver=4.30.2
+pkgver=4.32.0
 pkgrel=1
 pkgdesc="A POP3 mail retriever with reliable Maildir and command delivery."
 arch=(any)
@@ -28,4 +28,4 @@ package() {
   # Fix doc permissions
   chmod 0644  $pkgdir/usr/share/doc/$pkgname-$pkgver/*
 }
-md5sums=('02b2213ecdbd95d95f93323435e30a11')
+sha1sums=('83a8f5c5f388871b08be70164fec6a79d3ba6ec1')
