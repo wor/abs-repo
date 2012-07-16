@@ -1,0 +1,33 @@
+# Maintainer: Esa Määttä <wor@iki.fi>
+
+pkgname=python-pypeg2
+_pkgname="pyPEG2"
+pkgver=2.7.0
+pkgrel=1
+pkgdesc="a PEG Parser-Interpreter library in Python."
+arch=(any)
+url="http://fdik.org/pyPEG/"
+license=('GPL')
+groups=()
+depends=('python' 'python-lxml')
+makedepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=(!emptydirs)
+install=
+source=("http://fdik.org/${_pkgname}/${_pkgname}.tar.gz")
+sha1sums=('a60f82e395e9450aa2eaeee2b3b638fe32443ca6')
+
+package() {
+  cd "$srcdir/${_pkgname}-$pkgver"
+  python setup.py install --root="$pkgdir/" --optimize=1
+
+  # Move library example python scripts under /usr/share/pypeg2
+  mkdir -p "$pkgdir/usr/share/pypeg2"
+  mv "$pkgdir/usr/bin/"sample{1,2}.py "$pkgdir/usr/share/pypeg2"
+  rmdir "$pkgdir/usr/bin"
+}
+
+# vim:set ts=2 sw=2 sts=2 et:
