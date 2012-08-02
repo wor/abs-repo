@@ -2,7 +2,7 @@
 # arg 2:  the old package version
 
 KERNEL_NAME=-wor
-KERNEL_VERSION=3.4.4-2-wor
+KERNEL_VERSION=3.4.7-1-wor
 
 post_install () {
   # updating module dependencies
