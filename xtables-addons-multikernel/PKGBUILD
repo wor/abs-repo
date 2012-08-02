@@ -26,9 +26,10 @@ build() {
 	# loop through all detected kernels
 	_PACKAGES=`pacman -Qsq linux`
 	_KERNELS=`pacman -Ql $PACKAGES | grep '/modules.builtin$' | sed 's/.*\/lib\/modules\/\(.*\)\/modules.builtin/\1/g'`
+	msg "Found kernels: ${_KERNELS}"
 	for kernver in $_KERNELS; do
 		# check for kernel headers
-		kheaders="/lib/modules/$kernver/build"
+		kheaders="/usr/lib/modules/$kernver/build"
 		echo -e "\n\n\n>>> building for kernel: $kernver\n\n\n"
 		sleep 3
 		if [ ! -d "$kheaders" ]; then
@@ -38,13 +39,13 @@ build() {
 			continue
 		fi
 		# for stock/wor kernel override module install path to use extramodules path
-		# /lib/modules/xx.yy.zz-(ARCH|lts)/extra ==>
-		# /lib/modules/extramodules-xx.yy-(ARCH|lts)
+		# /usr/lib/modules/xx.yy.zz-(ARCH|lts)/extra ==>
+		# /usr/lib/modules/extramodules-xx.yy-(ARCH|lts)
 		if [[ $kernver =~ ^([0-9]+)\.([0-9]+)\.[0-9]+\-[0-9]+\-(ARCH|lts|wor|WOR)$ ]]; then
 			kmajor=${BASH_REMATCH[1]}
 			kminor=${BASH_REMATCH[2]}
 			ksuffix=${BASH_REMATCH[3]}
-			modsubdir="INSTALL_MOD_DIR=../extramodules-${kmajor}.${kminor}-${ksuffix}"
+			modsubdir="INSTALL_MOD_DIR=../../../usr/lib/modules/extramodules-${kmajor}.${kminor}-${ksuffix}"
 		else
 			modsubdir=""
 		fi
@@ -59,10 +60,14 @@ build() {
 		make || return 1
 		make -j2 DESTDIR=$pkgdir $modsubdir install || return 1
 		# remove empty moduledir (in case of override)
-		[ "x$modsubdir" != "x" ] && rmdir "${pkgdir}/lib/modules/${kernver}"
+		[ "x$modsubdir" != "x" ] && {
+			rmdir "${pkgdir}/lib/modules/${kernver}"
+			rmdir "${pkgdir}/lib/modules"
+			rmdir "${pkgdir}/lib"
+		}
 	done
 	# gzip kernel modules
-	find "${pkgdir}/lib/modules/" -name '*.ko' -exec gzip -9 {} \;
+	find "${pkgdir}/usr/lib/modules/" -name '*.ko' -exec gzip -9 {} \;
 	# remove exec from libraries
 	chmod a-x $pkgdir/usr/lib/iptables/*.so
 }
