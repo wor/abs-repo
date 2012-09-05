@@ -6,7 +6,7 @@
 # TODO: create default config dirs with right permissions
 
 pkgname=scrobby-git
-pkgver=20120712
+pkgver=20120905
 pkgrel=1
 pkgdesc="C++ last.fm Client for MPD" 
 arch=('i686' 'x86_64')
@@ -18,7 +18,8 @@ makedepends=('git')
 options=(!strip)
 source=('scrobby.init' 'scrobby.install' 'scrobby.tmpfiles.conf')
 md5sums=('5c9893ff121380085a9ca2cbc6cdda88'
-         '1c61489fb59f1743ce70b0a96490f212')
+         '1c61489fb59f1743ce70b0a96490f212'
+         'b3a35c956c7e45cce013364673cc48c6')
 
 #_gitroot="git://repo.or.cz/scrobby.git"
 _gitroot="git://github.com/wor/scrobby.git"
@@ -26,7 +27,7 @@ _gitname="scrobby"
 
 build() {
   cd "$srcdir"
-  msg "Connecting to repo.or.cz GIT server...."
+  msg "Connecting to $_gitroot ..."
 
   if [ -d $_gitname ] ; then
     cd $_gitname && git pull origin
@@ -51,9 +52,4 @@ build() {
   mkdir -p $pkgdir/var/cache/scrobby
   chown scrobby:scrobby $pkgdir/var/cache/scrobby
   install -m 0644 -D $srcdir/scrobby.tmpfiles.conf $pkgdir/usr/lib/tmpfiles.d/scrobby.conf
-} 
-md5sums=('8b14bb6f01d3a476f5a35aaf2ddb1ce8'
-         '1c61489fb59f1743ce70b0a96490f212')
-md5sums=('5c9893ff121380085a9ca2cbc6cdda88'
-         '1c61489fb59f1743ce70b0a96490f212'
-         'b3a35c956c7e45cce013364673cc48c6')
+}
