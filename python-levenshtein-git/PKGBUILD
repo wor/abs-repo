@@ -1,0 +1,70 @@
+# Maintainer: Esa Määttä <wor@iki.fi>
+
+pkgname=('python-levenshtein-git' 'python2-levenshtein-git')
+_libname=wor
+pkgver=20121012
+pkgrel=1
+pkgdesc="Python API for Levenshtein algorithm."
+arch=(any)
+url=""
+license=('GPL')
+groups=()
+makedepends=('git')
+optdepends=()
+provides=()
+conflicts=()
+backup=()
+options=()
+install=
+source=()
+noextract=()
+
+_gitroot="https://github.com/wor/python-Levenshtein"
+_gitname="python-Levenshtein"
+_gitbranch="master"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    # check specific branch if specified
+    if [ "${_gitbranch}X" != "X" ]; then
+      git clone -b $_gitbranch $_gitroot $_gitname
+    else
+      git clone $_gitroot $_gitname
+    fi
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+}
+
+package_python-levenshtein-git() {
+  depends=('python')
+  makedepends=('python', 'python-distribute')
+  replaces=('python-levenshtein')
+  conflicts=('python-levenshtein')
+
+  cd "$srcdir/$_gitname-build"
+  python setup.py build install --prefix=/usr/ --root=$pkgdir --optimize=1
+}
+
+package_python2-levenshtein-git() {
+  depends=('python2')
+  makedepends=('python2', 'python2-distribute')
+  replaces=('python2-levenshtein')
+  conflicts=('python2-levenshtein')
+
+  cd "$srcdir/$_gitname-build"
+  python2 setup.py build install --prefix=/usr/ --root=$pkgdir --optimize=1
+}
+
+# vim:set ts=2 sw=2 sts=2 et:
