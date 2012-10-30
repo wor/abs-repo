@@ -6,7 +6,7 @@
 # TODO: create default config dirs with right permissions
 
 pkgname=scrobby-git
-pkgver=20120905
+pkgver=20121030
 pkgrel=1
 pkgdesc="C++ last.fm Client for MPD" 
 arch=('i686' 'x86_64')
@@ -16,7 +16,7 @@ depends=('curl' 'openssl')
 install=scrobby.install
 makedepends=('git')
 options=(!strip)
-source=('scrobby.init' 'scrobby.install' 'scrobby.tmpfiles.conf')
+source=('scrobby.init' 'scrobby.install')
 md5sums=('5c9893ff121380085a9ca2cbc6cdda88'
          '1c61489fb59f1743ce70b0a96490f212'
          'b3a35c956c7e45cce013364673cc48c6')
@@ -45,11 +45,12 @@ build() {
 
   ./autogen.sh --prefix=/usr
   make || return 1
+
+  # For sysvinit compatibility
   install -D $srcdir/scrobby.init $pkgdir/etc/rc.d/scrobby
+
   mkdir -p $pkgdir/usr/share/doc/scrobby/
   cp -r $srcdir/scrobby-build/doc/* $pkgdir/usr/share/doc/scrobby/
+
   make DESTDIR="$pkgdir/" install
-  mkdir -p $pkgdir/var/cache/scrobby
-  chown scrobby:scrobby $pkgdir/var/cache/scrobby
-  install -m 0644 -D $srcdir/scrobby.tmpfiles.conf $pkgdir/usr/lib/tmpfiles.d/scrobby.conf
 }
