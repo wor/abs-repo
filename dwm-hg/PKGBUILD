@@ -3,7 +3,7 @@
 # TODO: make custom config file replacer more dynamic
 
 pkgname=dwm-hg
-pkgver=1599
+pkgver=1606
 pkgrel=1
 arch=('x86_64' 'i686')
 pkgdesc="A dynamic window manager for X11."
@@ -72,10 +72,8 @@ build()
 
   #------------#---1---##-----2-----##---3--#
   sed -i -r "s#(^PREFIX)([ ]*[=][ ]*)([^\n]*)#\1\2${prefix}#" ./config.mk
-  #------------#--1-------##-----2-----##---3--##------#
-  sed -i -r 's#(^MANPREFIX)([ ]*[=][ ]*)([^\/]*)([^\n]*)#\1\2\3/man#' ./config.mk
 
-  # inserting LIBDIR and INCDIR variables
+  # Inserting LIBDIR and INCDIR variables, after MANPREFIX
   sed -i -r 's#(^MANPREFIX)([^\n]*)#\1\2\nLIBDIR = ${PREFIX}/lib\nINCDIR = ${PREFIX}/include#' ./config.mk
 
   # X11INC and X11LIB
@@ -85,11 +83,8 @@ build()
   # disable XINERAMA
   sed -i -r 's|^(XINERAMA)|#\1|' ./config.mk
 
-  # INCS and LIBS
-  #------------#--1--##-----2-----##---3---##---4--##---5---##---6--##--7--##--8---#
-  sed -i -r 's#(^INCS)([ ]*[=][ ]*)([^-]*-I)([^- ]*)([^-]*-I)([^- ]*)([- ]*)([^\n]*)#\1\2\3\4\5${INCDIR}\7\8#' ./config.mk
-  #------------#--1--##-----2-----##---3---##---4--##-----5------##--6---#
-  sed -i -r 's#(^LIBS)([ ]*[=][ ]*)([^-]*-L)([^- ]*)([^-]*-lc[ ]*)([^\n]*)#\1\2\3${LIBDIR}\5\6#' ./config.mk
+  # Append INCDIR to INCS
+  sed -i -r 's#(^INCS *=.*)#\1 -I${INCDIR}#' ./config.mk
 
   # CFLAGS
   sed -i -r "s#(^CFLAGS)([ ]*[=][ ]*)([^ $]*)([^\n]*)#\1\2${CFLAGS}\4#" ./config.mk
