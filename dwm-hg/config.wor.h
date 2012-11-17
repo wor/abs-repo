@@ -101,9 +101,9 @@ static const Layout layouts[] = {
 
 /* commands */
 static const char *dmenucmd[]   = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *urxvtcmd[]   = { "urxvtc", NULL };
-static const char *urxvtcmd2[]  = { "urxvtc", NULL };
-static const char *urxvtcmd3[]  = { "urxvtc", "-fn", altfn, "-fb", altfb, "-fi", altfi, "-fbi", altfbi, NULL };
+static const char *urxvtcmd[]   = { "uxterm", NULL };
+static const char *urxvtcmd2[]  = { "uxterm", NULL };
+static const char *urxvtcmd3[]  = { "urxvt", "-fn", altfn, "-fb", altfb, "-fi", altfi, "-fbi", altfbi, NULL };
 static const char *uxtermcmd[]  = { "uxterm", NULL };
 static const char *screenshot[] = { "import", "-window", "root", "~/Desktop/screenshot.png", NULL };
 static const char *allmail[]    = { "/home/wor/bin/get_mail", NULL };
