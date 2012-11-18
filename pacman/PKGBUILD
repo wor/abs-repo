@@ -1,11 +1,11 @@
 # vim: set ts=2 sw=2 et:
-# $Id: PKGBUILD 163493 2012-07-13 12:31:08Z allan $
+# $Id: PKGBUILD 171468 2012-11-17 23:02:09Z allan $
 # Maintainer: Dan McGee <dan@archlinux.org>
 # Maintainer: Dave Reisner <dreisner@archlinux.org>
 
 pkgname=pacman
 pkgver=4.0.3
-pkgrel=3
+pkgrel=4
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -21,17 +21,29 @@ options=(!libtool)
 source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
         0001-Add-conflict-for-replacing-owned-empty-directory.patch
         0002-Check-empty-subdirectory-ownership.patch
+        0003-Ensure-pre_upgrade-scriptlet-gets-old-package-version.patch
         pacman.conf
         pacman.conf.x86_64
         makepkg.conf
         0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch)
 
 
+sha1sums=('c39f55d3ea763dc9fd88ab1dfa21da96d768b9d9'
+          '217be9908a454ae2b0dd70f0e9a90056e4f87dcf'
+          'b06cbb6bd3307b0c4aead8bfb5d20deb3bc8286b'
+          'c05dd057cc6510f7f87e5483ee59b36b37d86927'
+          '49dfcd6559957925e00ae85f61e8e6685220b303'
+          'b5539cccca3eda3a6b8c9fb2d841fc9fa94fe3e6'
+          '93c24062aa1b1155d8741140cf08e29a91cca103'
+          '84c446ed14b804f8dea2f0548bb9b447cd816f36'
+          '8531271108f2c8be1e9b6e044710cd5a98000eed')
+
 build() {
   cd $srcdir/$pkgname-$pkgver
   patch -p1 < ../0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch
   patch -p1 -i $srcdir/0001-Add-conflict-for-replacing-owned-empty-directory.patch
   patch -p1 -i $srcdir/0002-Check-empty-subdirectory-ownership.patch
+  patch -p1 -i $srcdir/0003-Ensure-pre_upgrade-scriptlet-gets-old-package-version.patch
 
   ./configure --prefix=/usr --sysconfdir=/etc \
     --localstatedir=/var --enable-doc
@@ -77,11 +89,3 @@ package() {
 
   install -Dm644 contrib/zsh_completion $pkgdir/usr/share/zsh/site-functions/_pacman
 }
-sha1sums=('c39f55d3ea763dc9fd88ab1dfa21da96d768b9d9'
-          '217be9908a454ae2b0dd70f0e9a90056e4f87dcf'
-          'b06cbb6bd3307b0c4aead8bfb5d20deb3bc8286b'
-          'c05dd057cc6510f7f87e5483ee59b36b37d86927'
-          'b5539cccca3eda3a6b8c9fb2d841fc9fa94fe3e6'
-          '93c24062aa1b1155d8741140cf08e29a91cca103'
-          '84c446ed14b804f8dea2f0548bb9b447cd816f36'
-          '8531271108f2c8be1e9b6e044710cd5a98000eed')
