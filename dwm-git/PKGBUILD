@@ -1,0 +1,80 @@
+# Maintainer: Esa Määttä <esa.maatta@iki.fi>
+
+pkgname=dwm-git
+pkgver=20130107
+pkgrel=1
+arch=('x86_64' 'i686')
+pkgdesc="A dynamic window manager for X11."
+url="http://www.suckless.org/dwm"
+makedepends=('libx11' 'mercurial' 'patch')
+license=('MIT/X')
+source=('dwm.desktop' 'view_change.patch' 'dwm-6.1-current_desktop.patch' 'dwm-6.1-netwmdesktop.patch')
+md5sums=('939f403a71b6e85261d09fc3412269ee'
+         '3f4e6c058e499d86d9b67878908a1a14'
+         '90113a04d949bed1f37aa576b792656b'
+         '5b37d9c623e34c45dfa59d86050ca6ef')
+#export pkgver=1507
+
+# custom config file in $startdir that replaces dwm default config.h
+_configfile=config.wor.h
+
+_gitname="dwm"
+_gitroot="http://git.suckless.org/dwm"
+
+_patch_source()
+{
+    local ii
+    for i in "${@}"; do
+        ((ii=i+1))
+        msg "Applying patch $ii: ${source[i]}";
+        patch -p1 <../${source[i]} || { echo "patch ${source[i]} failed."; return 1; }
+    done
+}
+
+build()
+{
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  # PATCH
+  _patch_source 1 2 3
+
+  # if custom config.h provided use it
+  if [ -f "${startdir}/${_configfile}" ]; then
+    msg "Using custom config file: ${_configfile} from ${startdir}"
+    cp -f "${startdir}/${_configfile}" ./config.h
+  elif [ -f "./${_configfile}" ]; then
+    cp -f "${_configfile}" ./config.h
+    msg "Using custom config file: ${_configfile} from $(pwd)"
+  fi
+
+  msg "Modifying config.mk"
+  sed -i 's/CPPFLAGS =/CPPFLAGS +=/g' config.mk
+  sed -i 's/^CFLAGS = -g/#CFLAGS += -g/g' config.mk
+  sed -i 's/^#CFLAGS = -std/CFLAGS += -std/g' config.mk
+  sed -i 's/^LDFLAGS = -g/#LDFLAGS += -g/g' config.mk
+  sed -i 's/^#LDFLAGS = -s/LDFLAGS += -s/g' config.mk
+  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+  make PREFIX=/usr DESTDIR=$pkgdir install
+  install -m644 -D LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE
+  install -m644 -D README $pkgdir/usr/share/doc/$pkgname/README
+  install -m644 -D $srcdir/dwm.desktop $pkgdir/usr/share/xsessions/dwm.desktop
+}
