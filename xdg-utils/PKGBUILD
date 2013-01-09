@@ -1,10 +1,12 @@
-# $Id: PKGBUILD 160047 2012-05-28 14:14:28Z andyrtr $
+# $Id: PKGBUILD 174822 2013-01-07 18:49:23Z andyrtr $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=xdg-utils
-pkgver=1.1.0
-_gitdate=20120520
-pkgrel=2.${_gitdate}
+_oldver=1.1.0
+_gitver=050333e34e2fe7430ad2ead37e5a0420ac0c2a3e # xdg-mime does not search mimeinfo.cache
+_gitdate=20121008
+pkgver=${_oldver}.git${_gitdate}
+pkgrel=2
 pkgdesc="Command line tools that assist applications with a variety of desktop integration tasks"
 arch=('any')
 url="http://portland.freedesktop.org/"
@@ -17,13 +19,12 @@ optdepends=('kdebase-runtime: for KDE support in xdg-open'
             'xorg-xprop: for Xfce support in xdg-open'
             'pcmanfm: for LXDE support in xdg-open'
             'perl-file-mimeinfo: for generic support in xdg-open')
-source=(ftp://ftp.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.${_gitdate}.tar.gz  # last git commit 2012-03-10 13:55:24 (GMT) allow DESKTOP_SESSION='Xfce Session' to match xfce
-		eval_browser.patch)
-md5sums=('4e37d65322dbc4763e85b8ba461f919b'
-         '74ac755501409ba15634c2c2a37d966c')
+source=(#http://cgit.freedesktop.org/xdg/xdg-utils/snapshot/xdg-utils-${_gitver}.tar.gz
+        ftp://ftp.archlinux.org/other/$pkgname/xdg-utils-${_gitver}.tar.gz
+        eval_browser.patch)
 
 build() {
-	cd ${srcdir}/${pkgname}-5be359a49d4d8dc3c5f814ab89b8422ad522d837
+	cd ${srcdir}/${pkgname}-${_gitver}
 	# eval with '$var' doesn't work if BROWSER variable contains ' chars
 	patch -p0 -i "${srcdir}"/eval_browser.patch
 	./configure --prefix=/usr --mandir=/usr/share/man
@@ -33,7 +34,10 @@ build() {
 }
 
 package() {
-	cd ${srcdir}/${pkgname}-5be359a49d4d8dc3c5f814ab89b8422ad522d837
+	cd ${srcdir}/${pkgname}-${_gitver}
 	make DESTDIR="${pkgdir}" install
 	install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	
+	# install empty directory to prevent xdg-desktop-menu install *.desktop to fail, see FS#33316
+	install -dm755 $pkgdir/usr/share/desktop-directories
 }
