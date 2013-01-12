@@ -1,16 +1,17 @@
-# $Id: PKGBUILD 159466 2012-05-24 16:52:04Z andyrtr $
+# $Id: PKGBUILD 173317 2012-12-18 20:48:23Z andyrtr $
 # Maintainer: Andreas Radke <andyrtr@archlinux.org>
 # Committer: Manolis Tzanidakis <manolis@archlinux.org>
 
 pkgname=getmail
-pkgver=4.32.0
+pkgver=4.36.0
 pkgrel=1
 pkgdesc="A POP3 mail retriever with reliable Maildir and command delivery."
 arch=(any)
 url="http://pyropus.ca/software/getmail"
 license=("GPL")
 depends=('python2')
-source=($pkgname-$pkgver.tar.gz)
+source=(http://pyropus.ca/software/getmail/old-versions/$pkgname-$pkgver.tar.gz)
+md5sums=('ad666ddd792150763216bf3ceea2ed30')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
@@ -23,9 +24,4 @@ package() {
   # fix some broken shebang calls
   sed -i -e "s|#![ ]*/usr/bin/env python|#!/usr/bin/env python2|" $pkgdir/usr/lib/python2.7/site-packages/getmailcore/__init__.py
   sed -i -e "s|#![ ]*/usr/bin/env python2.3|#!/usr/bin/env python2|" $(find -L $pkgdir -name '*.py')
-  # Fix man page permissions
-  chmod 0644  $pkgdir/usr/share/man/man1/*
-  # Fix doc permissions
-  chmod 0644  $pkgdir/usr/share/doc/$pkgname-$pkgver/*
 }
-sha1sums=('83a8f5c5f388871b08be70164fec6a79d3ba6ec1')
