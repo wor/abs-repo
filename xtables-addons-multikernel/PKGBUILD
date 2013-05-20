@@ -1,20 +1,20 @@
 # Maintainer: Lubomir Krajcovic <lubomir.krajcovic(AT)gmail(DOT)com>
 # Contributor: Vladimir Kutyavin <vlkut(AT)bk(DOT)ru>
 pkgname=xtables-addons-multikernel
-pkgver=1.43
+pkgver=2.2
 pkgrel=1
 pkgdesc="Additional extensions for iptables, ip6tables, etc. CHAOS, TARPIT, TEE, DELUDE and other targets; condition, geoip, ipp2p and other matches. Builds modules for all kernels detected on system."
 arch=('i686' 'x86_64')
 license=('GPL2')
 url="http://xtables-addons.sourceforge.net/"
-depends=('iptables>=1.4.14' 'libmnl>=1.0.3')
+depends=('iptables>=1.4.5')
 makedepends=('automake' 'autoconf')
 conflicts=(xtables-addons)
 replaces=(xtables-addons)
 provides=(xtables-addons)
 source=(http://download.sourceforge.net/project/xtables-addons/Xtables-addons/$pkgver/xtables-addons-$pkgver.tar.xz)
 install=$pkgname.install
-sha512sums=('482300ee86d7a3e11e4ec0345273772f9f841881ac806a6ab42b0b6737805cef8c2ad6b33c07917aeff3ea4d5208a986c72ce9bce686b068fec761e976624089')
+sha512sums=('1bfdfe5a540a4aeb32511c8092662a9694bc8b58c5b369065380fdca2044b24edb1e47ed7bf301771ee36c782f8ff457fd1f8cfa76ded5aaadf35f41292f6f8e')
 
 build() {
 	# go to builddir
@@ -38,9 +38,8 @@ build() {
 			echo "!!! could not locate directory: $kheaders"
 			continue
 		fi
-		# for stock/wor kernel override module install path to use extramodules path
-		# /usr/lib/modules/xx.yy.zz-(ARCH|lts)/extra ==>
-		# /usr/lib/modules/extramodules-xx.yy-(ARCH|lts)
+		# for stock kernels override module install path
+		# modules/xx.yy.zz-(ARCH|lts)/extra ==> /usr/lib/modules/extramodules-xx.yy-(ARCH|lts)
 		if [[ $kernver =~ ^([0-9]+)\.([0-9]+)\.[0-9]+\-[0-9]+\-(ARCH|lts|wor|WOR)$ ]]; then
 			kmajor=${BASH_REMATCH[1]}
 			kminor=${BASH_REMATCH[2]}
@@ -58,16 +57,13 @@ build() {
 			--mandir=/usr/share/man \
 			--with-kbuild="$kheaders"
 		make || return 1
-		make -j2 DESTDIR=$pkgdir $modsubdir install || return 1
-		# remove empty moduledir (in case of override)
-		[ "x$modsubdir" != "x" ] && {
-			rmdir "${pkgdir}/lib/modules/${kernver}"
-			rmdir "${pkgdir}/lib/modules"
-			rmdir "${pkgdir}/lib"
-		}
+		make -j2 DESTDIR=${pkgdir} ${modsubdir} install || return 1
+		# remove empty /lib dir (in case of override)
+		[ "x$modsubdir" != "x" ] && rm -rf "${pkgdir}/lib"
 	done
 	# gzip kernel modules
-	find "${pkgdir}/usr/lib/modules/" -name '*.ko' -exec gzip -9 {} \;
+	[ -d "${pkgdir}/lib/modules/" ] && find "${pkgdir}/lib/modules/" -name '*.ko' -exec gzip -9 {} \;
+	[ -d "${pkgdir}/usr/lib/modules/" ] && find "${pkgdir}/usr/lib/modules/" -name '*.ko' -exec gzip -9 {} \;
 	# remove exec from libraries
-	chmod a-x $pkgdir/usr/lib/iptables/*.so
+	chmod a-x $pkgdir/usr/lib/iptables/*.so &>/dev/null
 }
