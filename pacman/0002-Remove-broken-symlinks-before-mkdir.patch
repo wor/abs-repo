@@ -1,0 +1,17 @@
+Removes broken srcdir symlinks before trying to recreate them.
+
+diff --git a/scripts/makepkg.sh.in b/scripts/makepkg.sh.in
+index b85b87e..70bce70 100644
+--- a/scripts/makepkg.sh.in
++++ b/scripts/makepkg.sh.in
+@@ -2797,6 +2797,10 @@ fi
+ pkgdir="$pkgdirbase/$pkgbase"
+ 
+ if (( GENINTEG )); then
++	# remove broken $srcdir symlinks
++	if [[ -h "$srcdir" && ! -e "$srcdir" ]]; then
++		rm "$srcdir"
++	fi
+ 	mkdir -p "$srcdir"
+ 	chmod a-s "$srcdir"
+ 	cd_safe "$srcdir"
