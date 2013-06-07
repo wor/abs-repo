@@ -1,0 +1,55 @@
+# Maintainer: Esa Määttä <esa.maatta@iki.fi>
+pkgname=python-mrab-regex-hg
+pkgver=VERSION
+pkgrel=1
+pkgdesc="A new regex implementation intended eventually to replace Python's current re module implementation."
+arch=(any)
+url="https://code.google.com/p/mrab-regex-hg/"
+license=('unknown')
+groups=()
+depends=()
+makedepends=('mercurial' 'python')
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=('setup.py')
+noextract=()
+md5sums=('fca64590f466b87a7b3a2669e4844163')
+
+_hgroot=https://code.google.com/p/mrab-regex-hg/
+_hgrepo=mrab-regex-hg
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to Mercurial server...."
+
+  if [[ -d "$_hgrepo" ]]; then
+    cd "$_hgrepo"
+    hg pull -u
+    msg "The local files are updated."
+  else
+    hg clone "$_hgroot" "$_hgrepo"
+  fi
+
+  msg "Mercurial checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_hgrepo-build"
+  cp -r "$srcdir/$_hgrepo" "$srcdir/$_hgrepo-build"
+  cd "$srcdir/$_hgrepo-build"
+
+  #
+  # BUILD HERE
+  #
+  cp "$startdir/setup.py" .
+}
+
+package() {
+  cd "$srcdir/$_hgrepo-build"
+  python setup.py install --root="$pkgdir/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
