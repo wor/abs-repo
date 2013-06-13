@@ -72,6 +72,7 @@ static const Rule rules[] = {
     { "Arcoread",           NULL,       NULL,       0,          True,        -1 },
     { "Spring",             NULL,       NULL,       0,          True,        -1 },
     { "Springlobby",        NULL,       NULL,       0,          True,        -1 },
+    { "Gnuplot",            NULL,       NULL,       0,          True,        -1 },
     { NULL,                 "sun-awt-X11-XFramePeer",NULL,0,    True,        -1 },
     { "com-mathworks-util-PostVMInit",NULL,NULL,    0,          True,        -1 },
     { "broken",             "broken",   NULL,       0,          True,        -1 }, /* Float broken clients */
