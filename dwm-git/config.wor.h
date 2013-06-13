@@ -133,7 +133,7 @@ static Key keys[] = {
     { MODKEY,               XK_p,           spawn,          {.v = dmenucmd } },
     { MODKEY|ShiftMask|ControlMask,XK_Return,spawn,         {.v = urxvtcmd } },
     { MODKEY|ShiftMask,     XK_Return,      spawn,          {.v = urxvtcmd2 } },
-    { MODKEY|ShiftMask,     XK_s,           spawn,          {.v = urxvtcmd3 } }, 
+    { MODKEY|ShiftMask,     XK_S,           spawn,          {.v = urxvtcmd3 } },
     { MODKEY|ControlMask,   XK_Return,      spawn,          {.v = uxtermcmd } },
 
     { MODKEY,               XK_b,           togglebar,      {0} },
