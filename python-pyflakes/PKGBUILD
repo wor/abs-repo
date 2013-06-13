@@ -1,0 +1,36 @@
+# Maintainer: Mizuchi <ytj000+AUR@gmail.com>
+# wor: modified to build python2 and python3 versions with same PKGBUILD
+
+pkgname=('python-pyflakes' 'python2-pyflakes')
+pkgver=0.7.2
+pkgrel=1
+pkgdesc='A lint-like tool for Python to identify common errors quickly without executing code'
+arch=('any')
+url='http://pypi.python.org/pypi/pyflakes'
+license=('MIT')
+depends=('python')
+source=("http://pypi.python.org/packages/source/p/pyflakes/pyflakes-${pkgver}.tar.gz")
+sha1sums=('3271889cbc8f12eb7fe60ea5265299e3bf00e2a2')
+
+build() {
+  cd "${srcdir}"
+  cp -a pyflakes-${pkgver}{,-py3}
+
+  cd pyflakes-${pkgver}
+  python2 setup.py build
+
+  cd "${srcdir}"
+  cd pyflakes-${pkgver}-py3
+  python3 setup.py build
+}
+
+package_python-pyflakes() {
+  cd "${srcdir}/pyflakes-${pkgver}-py3"
+  python3 setup.py install --prefix=/usr --root=${pkgdir} --optimize=1
+  mv $pkgdir/usr/bin/pyflakes $pkgdir/usr/bin/pyflakes3
+}
+
+package_python2-pyflakes() {
+  cd "${srcdir}/pyflakes-${pkgver}"
+  python2 setup.py install --prefix=/usr --root=${pkgdir} --optimize=1
+}
