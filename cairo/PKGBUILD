@@ -1,67 +1,67 @@
-# $Id: PKGBUILD 161326 2012-06-09 14:55:04Z foutrelis $
+# $Id: PKGBUILD 184362 2013-05-06 19:36:38Z foutrelis $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: Brice Carpentier <brice@daknet.org>
 
 pkgname=cairo
-#_gitdate=20120426
-#_gitver=957a9cc619965178a8927d114fe852034fc2385c
-pkgver=1.12.2
-pkgrel=2
+pkgver=1.12.14
+pkgrel=4
 pkgdesc="Cairo vector graphics library"
 arch=(i686 x86_64)
 license=('LGPL' 'MPL')
 url="http://cairographics.org/"
-depends=('libpng' 'libxrender' 'fontconfig' 'pixman' 'glib2' 'sh')
-makedepends=('librsvg' 'poppler-glib' 'libspectre' 'gtk-doc') # 'libdrm')
-optdepends=('xcb-util: for XCB backend') # really needed?
+# depends=('libpng' 'libxrender' 'libxext' 'fontconfig' 'pixman>=0.28.0' 'glib2' 'mesa>=9.1' 'libgl' 'sh') 
+makedepends=('mesa>=9.1' 'mesa-libgl>=9.1' 'librsvg' 'gtk2' 'poppler-glib' 'libspectre' 'gtk-doc' 'valgrind'
+             # for the test suite:
+             'ttf-dejavu' 'gsfonts' 'xorg-server-xvfb' ) # 'libdrm')
+#optdepends=('xcb-util: for XCB backend') # really needed?
 provides=('cairo-xcb')
 replaces=('cairo-xcb')
 options=('!libtool')
 source=(http://cairographics.org/releases/$pkgname-$pkgver.tar.xz
-        #$pkgname-$pkgver.tar.gz::http://cgit.freedesktop.org/cairo/snapshot/cairo-${_gitver}.tar.gz 
-        cairo-1.10.0-buggy_gradients.patch
-        cairo-1.12.2-reduce-broken-stopped-edge-continuation.patch
-        #git_fixes.patch 
         cairo-respect-fontconfig.patch
+        libpng16.patch
 )
+sha1sums=('9106ab09b2e7b9f90521b18dd4a7e9577eba6c15'
+          '76fdca5bf0a803a37869f725adbedd9f0691671d'
+          'c9911f185637d266ce1d2985bd6fb7d0df3d75b2')
+
 build() {
-  cd "$srcdir/$pkgname-$pkgver"
-  #cd ${srcdir}/${pkgname}-${_gitver}
-  patch -Np1 -i ${srcdir}/cairo-1.10.0-buggy_gradients.patch
-  # https://bugs.freedesktop.org/show_bug.cgi?id=50852
-  patch -Np1 -i ${srcdir}/cairo-1.12.2-reduce-broken-stopped-edge-continuation.patch
-  # status is 2012-04-26 last commit: image: Fix typo in _blit_spans()
-  #patch -Np1 -i ${srcdir}/git_fixes.patch
-  #https://bugs.freedesktop.org/show_bug.cgi?id=11838
+  cd $pkgname-$pkgver
+
+  # https://bugs.freedesktop.org/show_bug.cgi?id=11838
   patch -Np1 -i "${srcdir}/cairo-respect-fontconfig.patch"
-  autoreconf -vfi
-  #./autogen.sh --prefix=/usr \
+
+  patch -Np1 -i ../libpng16.patch
+
   ./configure --prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
 	--enable-tee \
-	--disable-xlib-xcb \
+	--enable-gl \
+	--enable-egl \
+	--enable-svg \
+	--enable-ps \
+	--enable-pdf \
+	--enable-gobject #\
+	# --enable-test-surfaces
+	
+	#--disable-xlib-xcb \
 	# --enable-test-surfaces \ takes ages
 	#--enable-drm # breaks build
+	
   make
 }
 
 #check() {
-#  #cd "$srcdir/$pkgname-$pkgver"
-#  cd $srcdir/$pkgname-${_gitver}
-#  make -k check || /bin/true # 165 Passed, 316 Failed [3 crashed, 10 expected], 23 Skipped
+#  cd "$srcdir/$pkgname-$pkgver"
+  #make -k check || /bin/true # 162 Passed, 328 Failed [8 crashed, 10 expected], 26 Skipped
+#  make test || /bin/true # 29 Passed, 464 Failed [460 crashed, 2 expected], 26 Skipped
 #}
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver"
-  #cd $srcdir/$pkgname-${_gitver}
+  depends=('libpng' 'libxrender' 'libxext' 'fontconfig' 'pixman>=0.28.0' 'glib2' 'mesa>=9.1' 'libgl' 'sh' 'lzo2')
+
+  cd $pkgname-$pkgver
   make DESTDIR="$pkgdir" install
 }
-sha1sums=('bc2ee50690575f16dab33af42a2e6cdc6451e3f9'
-          '8b843a9934e5112b6188e5bcf4adfc1fdaf9fa04'
-          '76fdca5bf0a803a37869f725adbedd9f0691671d')
-sha1sums=('bc2ee50690575f16dab33af42a2e6cdc6451e3f9'
-          '8b843a9934e5112b6188e5bcf4adfc1fdaf9fa04'
-          'ee3d43fca7d1752b61593e606fd5a7b321dd2b66'
-          '76fdca5bf0a803a37869f725adbedd9f0691671d')
