@@ -14,8 +14,9 @@ static const char altfi[]           = "-windows-dina-medium-i-normal--13-80-96-9
 static const char altfbi[]          = "-windows-dina-bold-i-normal--13-80-96-96-c-70-iso8859-1";
 
 /* appearance */
-//static const char font[]            = "Terminus (ttf):pixelsize=10:antialias=false:autohint=false";
-static const char font[]            = "Verdana:pixelsize=10";
+//static const char font[]            = "Terminus (ttf):pixelsize=12:antialias=false:autohint=false";
+//static const char font[]            = "Verdana:pixelsize=10";
+static const char font[]            = "-*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*";
 #if DEFAULT_COLORS
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
