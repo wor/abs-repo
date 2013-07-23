@@ -1,0 +1,67 @@
+# Maintainer: Esa Määttä <wor@iki.fi>
+pkgname=('pyxdg-open-git')
+pkgver=20130404
+pkgrel=1
+pkgdesc="General python modules."
+arch=(any)
+url=""
+license=('unknown')
+groups=()
+depends=('python' 'python-tokenizer-git' 'python-desktop-file-parser-git')
+makedepends=('python' 'git' 'python-distribute' 'python2-distribute' 'python-nose')
+optdepends=()
+provides=()
+conflicts=()
+backup=()
+options=()
+install=
+source=()
+noextract=()
+
+_gitname="pyxdg-open"
+if [[ -d "/home/wor/repo/${_gitname}" ]]; then
+  _gitroot="/home/wor/repo/${_gitname}"
+else
+  _gitroot="https://github.com/wor/${_gitname}.git"
+fi
+_gitbranch="master"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    # check specific branch if specified
+    if [ "${_gitbranch}X" != "X" ]; then
+      git clone -b $_gitbranch $_gitroot $_gitname
+    else
+      git clone $_gitroot $_gitname
+    fi
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+}
+
+
+package_pyxdg-open-git() {
+  cd "$srcdir/$_gitname-build"
+
+  #. dev.sh
+  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
+
+  python setup.py install --root=$pkgdir/ --optimize=1
+
+  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__init__.*
+  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__pycache__/__init__.cpython*
+  #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+}
+
+# vim:set ts=2 sw=2 sts=2 et:
