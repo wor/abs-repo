@@ -2,10 +2,10 @@
 pkgname=('pyxdg-open-git')
 pkgver=20130404
 pkgrel=1
-pkgdesc="General python modules."
+pkgdesc="Python xdg-open clone."
 arch=(any)
-url=""
-license=('unknown')
+url="https://github.com/wor/pyxdg-open"
+license=('GPL3')
 groups=()
 depends=('python' 'python-tokenizer-git' 'python-desktop-file-parser-git')
 makedepends=('python' 'git' 'python-distribute' 'python2-distribute' 'python-nose')
@@ -25,6 +25,7 @@ else
   _gitroot="https://github.com/wor/${_gitname}.git"
 fi
 _gitbranch="master"
+
 
 build() {
   cd "$srcdir"
@@ -49,7 +50,6 @@ build() {
   git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
   cd "$srcdir/$_gitname-build"
 }
-
 
 package_pyxdg-open-git() {
   cd "$srcdir/$_gitname-build"
