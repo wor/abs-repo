@@ -1,53 +1,53 @@
 # vim: set ts=2 sw=2 et:
-# $Id: PKGBUILD 171528 2012-11-18 11:37:56Z allan $
+# $Id: PKGBUILD 188784 2013-06-20 06:35:12Z allan $
 # Maintainer: Dan McGee <dan@archlinux.org>
 # Maintainer: Dave Reisner <dreisner@archlinux.org>
 
 pkgname=pacman
-pkgver=4.0.3
-pkgrel=5
+pkgver=4.1.2
+pkgrel=1
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
 license=('GPL')
-groups=('base')
-depends=('bash' 'glibc>=2.15' 'libarchive>=3.0.2' 'curl>=7.19.4'
+groups=('base' 'base-devel')
+depends=('bash>=4.2.042-2' 'glibc>=2.17-2' 'libarchive>=3.1.2' 'curl>=7.19.4'
          'gpgme' 'pacman-mirrorlist' 'archlinux-keyring')
-makedepends=('asciidoc')
+checkdepends=('python2' 'fakechroot')
 optdepends=('fakeroot: for makepkg usage as normal user')
+provides=('pacman-contrib')
+conflicts=('pacman-contrib')
+replaces=('pacman-contrib')
 backup=(etc/pacman.conf etc/makepkg.conf)
 install=pacman.install
 options=(!libtool)
 source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
-        0001-Add-conflict-for-replacing-owned-empty-directory.patch
-        0002-Check-empty-subdirectory-ownership.patch
-        0003-Ensure-pre_upgrade-scriptlet-gets-old-package-version.patch
-        pacman.conf
+        pacman.conf.i686
         pacman.conf.x86_64
         makepkg.conf
-        0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch)
+        0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch
+        0002-Remove-broken-symlinks-before-mkdir.patch)
 
 
-sha1sums=('c39f55d3ea763dc9fd88ab1dfa21da96d768b9d9'
-          '217be9908a454ae2b0dd70f0e9a90056e4f87dcf'
-          'b06cbb6bd3307b0c4aead8bfb5d20deb3bc8286b'
-          'c05dd057cc6510f7f87e5483ee59b36b37d86927'
-          '49dfcd6559957925e00ae85f61e8e6685220b303'
-          'b5539cccca3eda3a6b8c9fb2d841fc9fa94fe3e6'
-          '93c24062aa1b1155d8741140cf08e29a91cca103'
-          '84c446ed14b804f8dea2f0548bb9b447cd816f36'
-          '8531271108f2c8be1e9b6e044710cd5a98000eed')
+sha1sums=('ed9a40a9b532bc43e48680826d57518134132538'
+          'SKIP'
+          'cd0f4fe9206753fe1187bb1baaa404780f60a509'
+          '3c1bddf27602e02fb57801c0ea7313b3869acc92'
+          '6c68e912e6497753e066def86473d4a2707dcd32'
+          '4c705c9491ebd030594bfebd7c692b6b76fe0bf7'
+          'a2794dd9e6a06caaa1d7a3b4b253b45aabc3c461')
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  patch -p1 < ../0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch
-  patch -p1 -i $srcdir/0001-Add-conflict-for-replacing-owned-empty-directory.patch
-  patch -p1 -i $srcdir/0002-Check-empty-subdirectory-ownership.patch
-  patch -p1 -i $srcdir/0003-Ensure-pre_upgrade-scriptlet-gets-old-package-version.patch
+  patch -p1 -i $srcdir/0001-Remove-existing-pkg-dir-only-if-it-s-not-empty.patch
+  patch -p1 -i $srcdir/0002-Remove-broken-symlinks-before-mkdir.patch
 
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --localstatedir=/var --enable-doc
+    --localstatedir=/var --enable-doc \
+    --with-scriptlet-shell=/usr/bin/bash \
+    --with-ldconfig=/usr/bin/ldconfig
   make
+  make -C contrib
 }
 
 check() {
@@ -57,18 +57,19 @@ check() {
 package() {
   cd $srcdir/$pkgname-$pkgver
   make DESTDIR=$pkgdir install
+  make DESTDIR=$pkgdir -C contrib install
 
   # install Arch specific stuff
-  mkdir -p $pkgdir/etc
+  install -dm755 $pkgdir/etc
+  install -m644 $srcdir/pacman.conf.$CARCH $pkgdir/etc/pacman.conf
+  
   case "$CARCH" in
-    i686)
-      install -m644 $srcdir/pacman.conf $pkgdir/etc/pacman.conf
+    i686)    
       mycarch="i686"
       mychost="i686-pc-linux-gnu"
       myflags="-march=i686"
       ;;
     x86_64)
-      install -m644 $srcdir/pacman.conf.x86_64 $pkgdir/etc/pacman.conf
       mycarch="x86_64"
       mychost="x86_64-unknown-linux-gnu"
       myflags="-march=x86-64"
@@ -80,12 +81,14 @@ package() {
     -e "s|@CARCH[@]|$mycarch|g" \
     -e "s|@CHOST[@]|$mychost|g" \
     -e "s|@CARCHFLAGS[@]|$myflags|g"
+    
+  # put bash_completion in the right location
+  install -dm755 ${pkgdir}/usr/share/bash-completion/completions
+  mv ${pkgdir}/etc/bash_completion.d/pacman \
+    ${pkgdir}/usr/share/bash-completion/completions
+  rmdir ${pkgdir}/etc/bash_completion.d
 
-  # install completion files
-  install -Dm644 contrib/bash_completion "$pkgdir/usr/share/bash-completion/completions/pacman"
   for f in makepkg pacman-key; do
     ln -s pacman "$pkgdir/usr/share/bash-completion/completions/$f"
   done
-
-  install -Dm644 contrib/zsh_completion $pkgdir/usr/share/zsh/site-functions/_pacman
 }
