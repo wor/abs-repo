@@ -2,44 +2,44 @@
 # Contributor:	Jussi Timperi	<gmail.com: jussi.timperi>
 # Maintainer:	Jesse Jaara	<gmail.com: jesse.jaara>
 
-pkgbase=suomi-malaga
-pkgname=$pkgbase-voikko
-#pkgname=($pkgbase-voikko $pkgbase-sukija)
-pkgver=1.12
-pkgrel=1
+#pkgbase=suomi-malaga
+pkgname=suomi-malaga-voikko
+#pkgname=(suomi-malaga-voikko $pkgbase-sukija)
+pkgver=1.13
+pkgrel=2
 pkgdesc="A description of Finnish morphology written in Malaga."
 arch=('any')
 url="http://voikko.sourceforge.net/"
 license=('GPL2')
 makedepends=('python2' 'malaga>=7.12')
-conflicts=("$pkgbase")
-provides=("$pkgbase")
-source=(http://downloads.sourceforge.net/voikko/$pkgbase-$pkgver.tar.gz)
+conflicts=('suomi-malaga')
+provides=('suomi-malaga')
+source=(http://downloads.sourceforge.net/voikko/suomi-malaga-$pkgver.tar.gz)
 
 build() {
-  cd "$srcdir/$pkgbase-$pkgver"
+  cd "$srcdir/suomi-malaga-$pkgver"
 
   sed 's|PYTHON=python|PYTHON=python2|g' -i Makefile
   make voikko EXTRA_LEX="vocabulary/erikoisalat/linux-distributions.lex vocabulary/erikoisalat/science-misc.lex"
-  make sukija EXTRA_LEX="vocabulary/erikoisalat/linux-distributions.lex vocabulary/erikoisalat/science-misc.lex"
+#  make sukija EXTRA_LEX="vocabulary/erikoisalat/linux-distributions.lex vocabulary/erikoisalat/science-misc.lex"
 }
 
 package_suomi-malaga-voikko() {
-  cd "$srcdir/$pkgbase-$pkgver"
-  make voikko-install DESTDIR="$pkgdir/usr/lib/$pkgbase"
+  cd "$srcdir/suomi-malaga-$pkgver"
+
+  make voikko-install DESTDIR="$pkgdir/usr/lib/voikko"
 
 }
 
 package_suomi-malaga-sukija() {
-  cd "$srcdir/$pkgbase-$pkgver/sukija"
+  cd "$srcdir/suomi-malaga-$pkgver/sukija"
 
-  mkdir -p "${pkgdir}/usr/lib/$pkgbase/2/mor-standard"
-  cp suomi.lex_l "${pkgdir}/usr/lib/$pkgbase/2/mor-standard/sukija-fi_FI.lex_l"
-  cp suomi.mor_l "${pkgdir}/usr/lib/$pkgbase/2/mor-standard/sukija-fi_FI.mor_l"
-  cp suomi.sym_l "${pkgdir}/usr/lib/$pkgbase/2/mor-standard/sukija-fi_FI.sym_l"
-  cp suomi.pro "${pkgdir}/usr/lib/$pkgbase/2/mor-standard/sukija-fi_FI.pro"
+  mkdir -p "${pkgdir}/usr/lib/suomi-malaga/2/mor-standard"
+  cp suomi.lex_l "${pkgdir}/usr/lib/suomi-malaga/2/mor-standard/sukija-fi_FI.lex_l"
+  cp suomi.mor_l "${pkgdir}/usr/lib/suomi-malaga/2/mor-standard/sukija-fi_FI.mor_l"
+  cp suomi.sym_l "${pkgdir}/usr/lib/suomi-malaga/2/mor-standard/sukija-fi_FI.sym_l"
+  cp suomi.pro "${pkgdir}/usr/lib/suomi-malaga/2/mor-standard/sukija-fi_FI.pro"
 
 }
 
-md5sums=('32f0a763a73b3b6273133fb0699c37db')
-md5sums=('80f476ee6f5d3d0662acd2bcfd0a4632')
+md5sums=('042761e2f7057cc5a929e586109c185b')
