@@ -20,6 +20,7 @@ build() {
   cd "$srcdir/suomi-malaga-$pkgver"
 
   sed 's|PYTHON=python|PYTHON=python2|g' -i Makefile
+  # linux-distributions.lex and science-misc.lex
   make voikko EXTRA_LEX="vocabulary/erikoisalat/linux-distributions.lex vocabulary/erikoisalat/science-misc.lex"
 #  make sukija EXTRA_LEX="vocabulary/erikoisalat/linux-distributions.lex vocabulary/erikoisalat/science-misc.lex"
 }
