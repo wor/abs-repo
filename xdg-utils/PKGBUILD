@@ -23,10 +23,20 @@ source=(#http://cgit.freedesktop.org/xdg/xdg-utils/snapshot/xdg-utils-${_gitver}
         ftp://ftp.archlinux.org/other/$pkgname/xdg-utils-${_gitver}.tar.gz
         eval_browser.patch)
 
+sha1sums=('a48eac12b86a8c52ad0537ad671b751bffbd97fd'
+          'f7029a87076b3375bb41b00a5687a613db2259f4')
+
 build() {
+	# Use newer version of xdg-open script straight from git repo
+	#cd ${srcdir}
+	#git clone git://anongit.freedesktop.org/xdg/${pkgname} "${pkgname}-git"
+	#cp "${pkgname}-git"/scripts/xdg-open{,.in} ${srcdir}/${pkgname}-${_gitver}/scripts/
+
 	cd ${srcdir}/${pkgname}-${_gitver}
+
 	# eval with '$var' doesn't work if BROWSER variable contains ' chars
-	patch -p0 -i "${srcdir}"/eval_browser.patch
+	#patch -p0 -i "${srcdir}"/eval_browser.patch
+
 	./configure --prefix=/usr --mandir=/usr/share/man
 	make scripts-clean -C scripts # needed if it's a git snapshot
 	make man scripts -C scripts # needed if it's a git snapshot
@@ -40,4 +50,7 @@ package() {
 	
 	# install empty directory to prevent xdg-desktop-menu install *.desktop to fail, see FS#33316
 	install -dm755 $pkgdir/usr/share/desktop-directories
+
+	# xdg-open is horrible piece of ****
+	rm -f ${pkgdir}/usr/bin/xdg-open
 }
