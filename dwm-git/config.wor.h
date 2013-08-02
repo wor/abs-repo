@@ -90,7 +90,7 @@ static const Layout layouts[] = {
     { "[M]",      monocle },
 };
 
-/* key definitions */
+/* key definitions, defined in /usr/include/X11/keysymdef.h */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
     { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -103,14 +103,14 @@ static const Layout layouts[] = {
 #define MONSLEEP "sleep 1 && exec xlock -mode blank -dpmssuspend 10 -endCmd 'xset dpms 0 900 0'"
 
 /* commands */
-static const char *dmenucmd[]   = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *urxvtcmd[]   = { "uxterm", NULL };
 static const char *urxvtcmd2[]  = { "urxvtc", NULL };
 static const char *urxvtcmd3[]  = { "urxvtc", "-fn", altfn, "-fb", altfb, "-fi", altfi, "-fbi", altfbi, NULL };
 static const char *uxtermcmd[]  = { "uxterm", NULL };
 static const char *screenshot[] = { "import", "-window", "root", "~/Desktop/screenshot.png", NULL };
 static const char *allmail[]    = { "/home/wor/bin/get_mail", NULL };
-static const char *workmail[]   = { "getmail", "-n", "--rcfile", "getmailrc_itut", "--rcfile", "getmailrc_ltut", NULL };
 static const char *screensaver[] = { "xlock", "-mode",  "xjack", NULL };
 //static const char *mixertoggle[]  = { "avolt", "-t", NULL };
 //static const char *mixertoggleout[]  = { "avolt", "-tf", NULL };
@@ -118,15 +118,16 @@ static const char *mixermasslower[]  = { "ponymix", "decrease", "1", NULL };
 static const char *mixermasllower[] = { "ponymix", "decrease", "5", NULL };
 static const char *mixermasshigher[]  = { "ponymix", "increase", "1", NULL };
 static const char *mixermaslhigher[] = { "ponymix", "increase", "5", NULL };
-static const char *musinfo[] = { "cmdp", "info", NULL };
+//static const char *musinfo[] = { "cmdp", "info", NULL };
 static const char *mustoggle[] = { "cmdp", "toggle", NULL };
 static const char *musstop[]   = { "cmdp", "stop", NULL };
 static const char *musprev[]   = { "cmdp", "prev", NULL };
 static const char *musnext[]   = { "cmdp", "next", NULL };
-static const char *musseekfs[]   = { "cmdp", "seek", "10", NULL };
-static const char *musseekbs[]   = { "cmdp", "seek", "-10", NULL };
-static const char *musseekfl[]   = { "cmdp", "seek", "30", NULL };
-static const char *musseekbl[]   = { "cmdp", "seek", "-30", NULL };
+
+//static const char *musseekfs[]   = { "cmdp", "seek", "10", NULL };
+//static const char *musseekbs[]   = { "cmdp", "seek", "-10", NULL };
+//static const char *musseekfl[]   = { "cmdp", "seek", "30", NULL };
+//static const char *musseekbl[]   = { "cmdp", "seek", "-30", NULL };
 
 static Key keys[] = {
     /* modifier             key             function        argument */ \
@@ -173,26 +174,24 @@ static Key keys[] = {
     TAGKEYS(                XK_e,                           12)
     TAGKEYS(                XK_a,                           13)
     { 0,                    XK_Print,       spawn,          {.v = screenshot } },
-    { MODKEY,               XK_Home,        spawn,          {.v = workmail } },
     { 0,                    XK_Pause,       spawn,          SHCMD(MONSLEEP) },
     { MODKEY,               XK_Pause,       spawn,          {.v = screensaver } },
     { MODKEY|ShiftMask,     XK_z,           quit,           {0} },
     /* music seeking using arrow keys */
-    { MODKEY,               XK_Right,       spawn,          {.v = musseekfs } },
-    { MODKEY,               XK_Up,          spawn,          {.v = musseekfl } },
-    { MODKEY,               XK_Left,        spawn,          {.v = musseekbs } },
-    { MODKEY,               XK_Down,        spawn,          {.v = musseekbl } },
+    // TODO: fix
+    //{ MODKEY,               XK_Right,       spawn,          {.v = musseekfs } },
+    //{ MODKEY,               XK_Left,        spawn,          {.v = musseekbs } },
 #if XKEYS
+    // Mail
     { 0,                    XF86XK_Mail,            spawn,  {.v = allmail } },
-    { MODKEY,               XF86XK_Mail,            spawn,  {.v = workmail } },
-//    { 0,                    XF86XK_AudioMute,       spawn,  {.v = mixertoggleout } },
-//    { MODKEY,               XF86XK_AudioMute,       spawn,  {.v = mixertoggle } },
+    // Volume control
     { 0,                    XF86XK_AudioLowerVolume,spawn,  {.v = mixermasslower } },
     { MODKEY,               XF86XK_AudioLowerVolume,spawn,  {.v = mixermasllower } },
     { 0,                    XF86XK_AudioRaiseVolume,spawn,  {.v = mixermasshigher } },
     { MODKEY,               XF86XK_AudioRaiseVolume,spawn,  {.v = mixermaslhigher } },
-    { 0,                    XF86XK_AudioPlay,       spawn,  {.v = mustoggle } }, // broken on my logitech wave keyboard
-    { 0,                    XF86XK_Tools,           spawn,  {.v = musinfo } },
+    // Music control
+    // check that works { 0,                    XF86XK_Tools,           spawn,  {.v = musinfo } },
+    { 0,                    XF86XK_AudioPlay,       spawn,  {.v = mustoggle } },
     { 0,                    XF86XK_AudioStop,       spawn,  {.v = musstop } },
     { 0,                    XF86XK_AudioPrev,       spawn,  {.v = musprev } },
     { 0,                    XF86XK_AudioNext,       spawn,  {.v = musnext } },
@@ -200,6 +199,16 @@ static Key keys[] = {
     { MODKEY,               XF86XK_Sleep,           spawn,  {.v = screensaver } },
     { 0,                    XF86XK_Standby,         spawn,  SHCMD(MONSLEEP) },
 #endif
+    // Mail
+    { MODKEY,               XK_Scroll_Lock,         spawn,  {.v = allmail } },
+    // Volume control
+    { MODKEY,               XK_Up,                  spawn,  {.v = mixermasshigher } },
+    { MODKEY,               XK_Down,                spawn,  {.v = mixermasslower } },
+    // Music control
+    { MODKEY,               XK_Insert,              spawn,  {.v = mustoggle } },
+    { MODKEY,               XK_End,                 spawn,  {.v = musstop } },
+    { MODKEY,               XK_Page_Up,             spawn,  {.v = musnext } },
+    { MODKEY,               XK_Page_Down,           spawn,  {.v = musprev } },
 };
 
 /* button definitions */
