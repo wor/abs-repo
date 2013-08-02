@@ -1,7 +1,7 @@
 # Maintainer: Esa Määttä <esa.maatta@iki.fi>
 
 pkgname=dwm-git
-pkgver=20130107
+pkgver=20130113
 pkgrel=1
 arch=('x86_64' 'i686')
 pkgdesc="A dynamic window manager for X11."
@@ -11,8 +11,8 @@ license=('MIT/X')
 source=('dwm.desktop' 'view_change.patch' 'dwm-6.1-current_desktop.patch' 'dwm-6.1-netwmdesktop.patch')
 md5sums=('939f403a71b6e85261d09fc3412269ee'
          '3f4e6c058e499d86d9b67878908a1a14'
-         '90113a04d949bed1f37aa576b792656b'
-         '5b37d9c623e34c45dfa59d86050ca6ef')
+         '7b6e5aaab908450a7ed36f473640acb1'
+         'ace10c909ab3c0ddf20e91cf9bf9cbc0')
 #export pkgver=1507
 
 # custom config file in $startdir that replaces dwm default config.h
