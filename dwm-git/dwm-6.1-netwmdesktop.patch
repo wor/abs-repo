@@ -5,12 +5,12 @@ diff --git a/dwm.c b/dwm.c
  enum { NetSupported, NetWMName, NetWMState,
         NetWMFullscreen, NetActiveWindow, NetWMWindowType,
         NetWMWindowTypeDialog,
--       NetNumberOfDesktops, NetCurrentDesktop, NetClientList, NetLast };     /* EWMH atoms */
+-       NetNumberOfDesktops, NetCurrentDesktop, NetClientList, NetLast }; /* EWMH atoms */
 +       NetNumberOfDesktops, NetCurrentDesktop,
 +       NetWMDesktop, NetClientList, NetLast };     /* EWMH atoms */
  enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
  enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-        ClkClientWin, ClkRootWin, ClkLast };             /* clicks */
+        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 @@ -234,6 +235,7 @@
  static void unfocus(Client *c, Bool setfocus);
  static void unmanage(Client *c, Bool destroyed);

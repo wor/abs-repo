@@ -2,12 +2,12 @@ diff --git a/dwm.c b/dwm.c
 --- a/dwm.c
 +++ b/dwm.c
 @@ -59,7 +59,8 @@
- enum { ColBorder, ColFG, ColBG, ColLast };              /* color */
+ enum { SchemeNorm, SchemeSel, SchemeLast }; /* color schemes */
  enum { NetSupported, NetWMName, NetWMState,
         NetWMFullscreen, NetActiveWindow, NetWMWindowType,
--       NetWMWindowTypeDialog, NetClientList, NetLast };     /* EWMH atoms */
+-       NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 +       NetWMWindowTypeDialog,
-+       NetNumberOfDesktops, NetCurrentDesktop, NetClientList, NetLast };     /* EWMH atoms */
++       NetNumberOfDesktops, NetCurrentDesktop, NetClientList, NetLast }; /* EWMH atoms */
  enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
  enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
         ClkClientWin, ClkRootWin, ClkLast };             /* clicks */
