@@ -201,14 +201,23 @@ static Key keys[] = {
 #endif
     // Mail
     { MODKEY,               XK_Scroll_Lock,         spawn,  {.v = allmail } },
+    //{ XK_Multi_key,         XK_Scroll_Lock,         spawn,  {.v = allmail } },
     // Volume control
     { MODKEY,               XK_Up,                  spawn,  {.v = mixermasshigher } },
     { MODKEY,               XK_Down,                spawn,  {.v = mixermasslower } },
+    // --..--
+    //{ XK_Multi_key,         XK_Up,                  spawn,  {.v = mixermasshigher } },
+    //{ XK_Multi_key,         XK_Down,                spawn,  {.v = mixermasslower } },
     // Music control
     { MODKEY,               XK_Insert,              spawn,  {.v = mustoggle } },
     { MODKEY,               XK_End,                 spawn,  {.v = musstop } },
     { MODKEY,               XK_Page_Up,             spawn,  {.v = musnext } },
     { MODKEY,               XK_Page_Down,           spawn,  {.v = musprev } },
+    // --..--
+    //{ XK_Multi_key,         XK_Insert,              spawn,  {.v = mustoggle } },
+    //{ XK_Multi_key,         XK_End,                 spawn,  {.v = musstop } },
+    //{ XK_Multi_key,         XK_Page_Up,             spawn,  {.v = musnext } },
+    //{ XK_Multi_key,         XK_Page_Down,           spawn,  {.v = musprev } },
 };
 
 /* button definitions */
