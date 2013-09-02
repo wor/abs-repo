@@ -7,8 +7,8 @@ arch=(any)
 url="https://github.com/wor/pyxdg-open"
 license=('GPL3')
 groups=()
-depends=('python' 'python-tokenizer-git' 'python-desktop-file-parser-git')
-makedepends=('python' 'git' 'python-distribute' 'python2-distribute' 'python-nose')
+depends=('python' 'python-desktop-file-parser-git')
+makedepends=('python' 'git' 'python-setuptools' 'python2-setuptools')
 optdepends=('python-magic')
 provides=()
 conflicts=()
@@ -53,9 +53,6 @@ build() {
 
 package_pyxdg-open-git() {
   cd "$srcdir/$_gitname-build"
-
-  #. dev.sh
-  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
 
   python setup.py install --root=$pkgdir/ --optimize=1
 
