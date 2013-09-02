@@ -8,7 +8,7 @@ url="https://github.com/wor/desktop_file_parser"
 license=('GPL3')
 groups=()
 depends=('python')
-makedepends=('python' 'python2' 'git' 'python-distribute' 'python2-distribute' 'python-nose')
+makedepends=('python' 'python2' 'git' 'python-setuptools' 'python2-setuptools' 'python-nose')
 optdepends=()
 provides=()
 conflicts=()
@@ -53,11 +53,15 @@ build() {
   cd "$srcdir/$_gitname-build"
 }
 
-package_python-desktop-file-parser-git() {
+check() {
   cd "$srcdir/$_gitname-build"
 
-  #. dev.sh
-  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
+  python setup.py test
+  #python2 setup.py test
+}
+
+package_python-desktop-file-parser-git() {
+  cd "$srcdir/$_gitname-build"
 
   python setup.py install --root=$pkgdir/ --optimize=1
 
@@ -68,9 +72,6 @@ package_python-desktop-file-parser-git() {
 
 package_python2-desktop-file-parser-git() {
   cd "$srcdir/$_gitname-build"
-
-  #. dev.sh
-  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
 
   python2 setup.py --no-console-scripts install --root=$pkgdir/ --optimize=1
 
