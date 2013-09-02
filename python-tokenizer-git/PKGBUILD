@@ -1,5 +1,5 @@
 # Maintainer: Esa Määttä <wor@iki.fi>
-pkgname=('python-tokenizer-git' 'python2-tokenizer-git')
+pkgname=('python-tokenizer-git')
 pkgver=20130404
 pkgrel=1
 pkgdesc="Python tokenizer library."
@@ -8,7 +8,7 @@ url="https://github.com/wor/tokenizer"
 license=('GPL3')
 groups=()
 depends=('python')
-makedepends=('python' 'python2' 'git' 'python-distribute' 'python2-distribute' 'python-nose')
+makedepends=('python' 'git' 'python-setuptools' 'python-nose')
 optdepends=()
 provides=()
 conflicts=()
@@ -53,11 +53,14 @@ build() {
   cd "$srcdir/$_gitname-build"
 }
 
-package_python-tokenizer-git() {
+check() {
   cd "$srcdir/$_gitname-build"
 
-  #. dev.sh
-  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
+  python setup.py test
+}
+
+package_python-tokenizer-git() {
+  cd "$srcdir/$_gitname-build"
 
   python setup.py install --root=$pkgdir/ --optimize=1
 
@@ -66,17 +69,15 @@ package_python-tokenizer-git() {
   #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
 }
 
-package_python2-tokenizer-git() {
-  cd "$srcdir/$_gitname-build"
-
-  #. dev.sh
-  #./testrunner.py -t 0 1 1>/dev/null || { echo "Tests failed!"; return 1; }
-
-  python2 setup.py --no-console-scripts install --root=$pkgdir/ --optimize=1
-
-  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__init__.*
-  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__pycache__/__init__.cpython*
-  #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
-}
+# Disabled as not python2 compatible at the moment
+#package_python2-tokenizer-git() {
+#  cd "$srcdir/$_gitname-build"
+#
+#  python2 setup.py --no-console-scripts install --root=$pkgdir/ --optimize=1
+#
+#  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__init__.*
+#  rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__pycache__/__init__.cpython*
+#  #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+#}
 
 # vim:set ts=2 sw=2 sts=2 et:
