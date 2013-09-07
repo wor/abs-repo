@@ -1,0 +1,48 @@
+# Maintainer: Esa Määttä <wor@iki.fi>
+_libname=lenskit
+pkgname=("java-${_libname}")
+pkgver=2.0
+pkgrel=1
+pkgdesc="LensKit is an open source toolkit for building, researching, and studying recommender systems."
+arch=('any')
+url="http://lenskit.grouplens.org/"
+license=('LGPL')
+depends=('java-runtime-headless')
+makedepends=('maven')
+checkdepends=('maven')
+source=(http://lenskit.grouplens.org/downloads/${_libname}-${pkgver}-source.tar.gz)
+md5sums=('374e4a28a343e811197ddcd502a41cd2')
+
+
+build() {
+    cd "${srcdir}/${_libname}-${pkgver}"
+
+    _M2_REPO=${srcdir}/.m2
+    mkdir -p ${_M2_REPO}
+
+    mvn -Dmaven.repo.local=${_M2_REPO} -Dgrouplens.mldata.acknowledge=yes \
+        clean \
+        package
+}
+
+check() {
+    cd "${srcdir}/${_libname}-${pkgver}"
+
+    _M2_REPO=${srcdir}/.m2
+
+    mvn -Dmaven.repo.local=${_M2_REPO} -Dgrouplens.mldata.acknowledge=yes \
+        test
+}
+
+package() {
+    cd "${srcdir}/${_libname}-${pkgver}"
+
+    for jar in $(find ${_libname}-package/target/dist/${_libname}/lib -name "*.jar"); do
+        install -Dm644 ${jar} \
+            ${pkgdir}/usr/share/java/${_libname}/${jar}
+    done
+    install -Dm755 ${_libname}-package/target/dist/${_libname}/bin/lenskit-eval ${pkgdir}/usr/bin/lenskit-eval
+
+    install -Dm644 COPYING ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
+}
+
