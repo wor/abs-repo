@@ -2,7 +2,7 @@
 
 pkgname=ttf-win-fonts
 pkgver=1
-pkgrel=1
+pkgrel=3
 pkgdesc="Microsoft Windows TTF fonts"
 url="http://www.microsoft.com/downloads/details.aspx?FamilyId=428D5727-43AB-4F24-90B7-A94784AF71A4&displaylang=en"
 license=(custom)
@@ -14,10 +14,24 @@ provides=()
 replaces=()
 install=$pkgname.install
 source=("$pkgname.tar.xz")
-sha1sums=('e58006c29ccb138a730b6f6817d9179438be96f2')
+sha1sums=('cb790b55db55680097d27ec8ab69d03b473201d4')
 
 build() {
-  mkdir -p $pkgdir/usr/share/fonts/TTF
-  install -m644 $startdir/src/win*/*.{ttf,ttc} $startdir/pkg/usr/share/fonts/TTF
-  rm $pkgdir/usr/share/fonts/TTF/symbol.ttf # not very usefull font, also osx font package has this
+  cd $srcdir
+
+  find . -iname "*.ttc" -execdir font_conv '{}' \;
+}
+
+package() {
+    mkdir -p "$pkgdir/usr/share/fonts/TTF"
+    mkdir -p "$pkgdir/usr/share/fonts/OTF"
+
+    cd $srcdir
+
+    # Just install ttf and otf fonts
+    find . \( -iname "*.ttf" -o -iname "*.otf" \) -execdir chmod 644 '{}' \;
+    find . -iname "*.ttf" -execdir cp '{}' "$pkgdir/usr/share/fonts/TTF" \;
+    find . -iname "*.otf" -execdir cp '{}' "$pkgdir/usr/share/fonts/OTF" \;
+
+    rm $pkgdir/usr/share/fonts/TTF/symbol.ttf # not very usefull font, also osx font package has this
 }

@@ -1,7 +1,7 @@
 # Maintainer: Esa Määttä <wor@iki.fi>
 _libname=lenskit
 pkgname=("java-${_libname}")
-pkgver=2.0
+pkgver=2.0.1
 pkgrel=1
 pkgdesc="LensKit is an open source toolkit for building, researching, and studying recommender systems."
 arch=('any')
@@ -11,7 +11,7 @@ depends=('java-runtime-headless')
 makedepends=('maven')
 checkdepends=('maven')
 source=(http://lenskit.grouplens.org/downloads/${_libname}-${pkgver}-source.tar.gz)
-md5sums=('374e4a28a343e811197ddcd502a41cd2')
+md5sums=('dc4efacecbf9692f90f81e97d91dbd0d')
 
 
 build() {

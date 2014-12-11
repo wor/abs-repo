@@ -109,20 +109,21 @@ static const char *urxvtcmd[]   = { "uxterm", NULL };
 static const char *urxvtcmd2[]  = { "urxvtc", NULL };
 static const char *urxvtcmd3[]  = { "urxvtc", "-fn", altfn, "-fb", altfb, "-fi", altfi, "-fbi", altfbi, NULL };
 static const char *uxtermcmd[]  = { "uxterm", NULL };
-static const char *screenshot[] = { "import", "-window", "root", "~/Desktop/screenshot.png", NULL };
+static const char *screenshot[] = { "import", "-window", "root", "~/screenshot.png", NULL };
 static const char *allmail[]    = { "/home/wor/bin/get_mail", NULL };
-static const char *screensaver[] = { "xlock", "-mode",  "xjack", NULL };
+//static const char *screensaver[] = { "xlock", "-mode",  "xjack", NULL };
 //static const char *mixertoggle[]  = { "avolt", "-t", NULL };
 //static const char *mixertoggleout[]  = { "avolt", "-tf", NULL };
-static const char *mixermasslower[]  = { "ponymix", "decrease", "1", NULL };
+static const char *mixermasslower[]  = { "ponymix", "decrease", "2", NULL };
 static const char *mixermasllower[] = { "ponymix", "decrease", "5", NULL };
-static const char *mixermasshigher[]  = { "ponymix", "increase", "1", NULL };
+static const char *mixermasshigher[]  = { "ponymix", "increase", "2", NULL };
 static const char *mixermaslhigher[] = { "ponymix", "increase", "5", NULL };
 //static const char *musinfo[] = { "cmdp", "info", NULL };
 static const char *mustoggle[] = { "cmdp", "toggle", NULL };
 static const char *musstop[]   = { "cmdp", "stop", NULL };
 static const char *musprev[]   = { "cmdp", "prev", NULL };
 static const char *musnext[]   = { "cmdp", "next", NULL };
+static const char *suspend[]   = { "systemctl", "suspend", NULL };
 
 //static const char *musseekfs[]   = { "cmdp", "seek", "10", NULL };
 //static const char *musseekbs[]   = { "cmdp", "seek", "-10", NULL };
@@ -175,7 +176,7 @@ static Key keys[] = {
     TAGKEYS(                XK_a,                           13)
     { 0,                    XK_Print,       spawn,          {.v = screenshot } },
     { 0,                    XK_Pause,       spawn,          SHCMD(MONSLEEP) },
-    { MODKEY,               XK_Pause,       spawn,          {.v = screensaver } },
+    { MODKEY,               XK_Pause,       spawn,          {.v = suspend } },
     { MODKEY|ShiftMask,     XK_z,           quit,           {0} },
     /* music seeking using arrow keys */
     // TODO: fix
@@ -196,11 +197,11 @@ static Key keys[] = {
     { 0,                    XF86XK_AudioPrev,       spawn,  {.v = musprev } },
     { 0,                    XF86XK_AudioNext,       spawn,  {.v = musnext } },
     { 0,                    XF86XK_Sleep,           spawn,  SHCMD(MONSLEEP) },
-    { MODKEY,               XF86XK_Sleep,           spawn,  {.v = screensaver } },
+    { MODKEY,               XF86XK_Sleep,           spawn,  {.v = suspend } },
     { 0,                    XF86XK_Standby,         spawn,  SHCMD(MONSLEEP) },
 #endif
     // Mail
-    { MODKEY,               XK_Scroll_Lock,         spawn,  {.v = allmail } },
+    { MODKEY,               XK_Home,                  spawn,  {.v = allmail } },
     //{ XK_Multi_key,         XK_Scroll_Lock,         spawn,  {.v = allmail } },
     // Volume control
     { MODKEY,               XK_Up,                  spawn,  {.v = mixermasshigher } },
@@ -214,6 +215,7 @@ static Key keys[] = {
     { MODKEY,               XK_Page_Up,             spawn,  {.v = musnext } },
     { MODKEY,               XK_Page_Down,           spawn,  {.v = musprev } },
     // --..--
+    //{ 0,                    XK_Multi_key,           spawn,  {.v = mustoggle } },
     //{ XK_Multi_key,         XK_Insert,              spawn,  {.v = mustoggle } },
     //{ XK_Multi_key,         XK_End,                 spawn,  {.v = musstop } },
     //{ XK_Multi_key,         XK_Page_Up,             spawn,  {.v = musnext } },

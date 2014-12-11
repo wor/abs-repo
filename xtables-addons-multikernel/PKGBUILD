@@ -51,6 +51,7 @@ build() {
 		# call config, build and install subsystems
 		./configure \
 			--prefix=/usr \
+			--sbindir=/usr/bin \
 			--libexecdir=/usr/lib/iptables \
 			--sysconfdir=/etc \
 			--with-xtlibdir=/usr/lib/iptables \

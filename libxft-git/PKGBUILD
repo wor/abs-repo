@@ -1,7 +1,7 @@
 #Maintainer: Matt Parnell /ilikenwf <parwok@gmail.com>
 
 pkgname=libxft-git
-pkgver=20120709
+pkgver=20130116
 pkgrel=1
 pkgdesc="FreeType-based font drawing library for X"
 arch=('i686' 'x86_64')
@@ -35,8 +35,12 @@ build() {
 
 cd $startdir/src/$_gitname
 
-  sh autogen.sh --prefix=/usr --sysconfdir=/etc || return 1
-  make || return 1
-  make DESTDIR=${startdir}/pkg install || return 1
+  sh autogen.sh --prefix=/usr --sysconfdir=/etc
+  make
 
+}
+
+package() {
+    cd $startdir/src/$_gitname
+    make DESTDIR=${startdir}/pkg install
 }

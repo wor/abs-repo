@@ -1,7 +1,7 @@
 # Contributor: Esa Määttä <wor@iki.fi>
 pkgname=('python-worlib-git' 'python2-worlib-git')
 _libname=wor
-pkgver=20120509
+pkgver=20130225
 pkgrel=1
 pkgdesc="General python modules."
 arch=(any)
@@ -62,7 +62,7 @@ package_python-worlib-git() {
   python setup.py install --root=$pkgdir/ --optimize=1
   #install -D -m755 "${srcdir}/host_allower.init" "${pkgdir}/etc/rc.d/host_allower"
 
-  /bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+  #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
 }
 
 package_python2-worlib-git() {
@@ -76,7 +76,7 @@ package_python2-worlib-git() {
   python2 setup.py --no-console-scripts install --root=$pkgdir/ --optimize=1
   #install -D -m755 "${srcdir}/host_allower.init" "${pkgdir}/etc/rc.d/host_allower"
 
-  /bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
+  #/bin/chmod 644 ${pkgdir}/usr/lib/python*/site-packages/${_libname}-*-py*.egg-info/*
 }
 
 # vim:set ts=2 sw=2 sts=2 et:

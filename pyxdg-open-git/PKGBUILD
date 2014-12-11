@@ -8,10 +8,10 @@ url="https://github.com/wor/pyxdg-open"
 license=('GPL3')
 groups=()
 depends=('python' 'python-desktop-file-parser-git')
-makedepends=('python' 'git' 'python-setuptools' 'python2-setuptools')
-optdepends=('python-magic')
+makedepends=('python' 'git' 'python-setuptools' 'python2-setuptools' 'python-magic')
+#optdepends=('python-magic')
 provides=()
-conflicts=()
+#conflicts=('xdg-utils')
 backup=()
 options=()
 install=
@@ -54,7 +54,7 @@ build() {
 package_pyxdg-open-git() {
   cd "$srcdir/$_gitname-build"
 
-  python setup.py install --root=$pkgdir/ --optimize=1
+  python setup.py install --exec_name="xdg-open" --root=$pkgdir/ --optimize=1
 
   rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__init__.*
   rm -f ${pkgdir}/usr/lib/python*/site-packages/wor/__pycache__/__init__.cpython*

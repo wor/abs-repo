@@ -2,7 +2,7 @@
 
 pkgname=('python-levenshtein-git' 'python2-levenshtein-git')
 _libname=wor
-pkgver=20121012
+pkgver=20121109
 pkgrel=1
 pkgdesc="Python API for Levenshtein algorithm."
 arch=(any)

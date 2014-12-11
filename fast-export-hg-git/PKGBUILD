@@ -1,6 +1,6 @@
 # Maintainer: Esa Määttä <esa.maatta@iki.if>
 pkgname=fast-export-hg-git
-pkgver=20120131
+pkgver=20121109
 pkgrel=1
 pkgdesc="Fast-export git repositories to hg repositories."
 arch=(any)

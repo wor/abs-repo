@@ -21,10 +21,15 @@ build() {
     mkdir -p "$pkgdir/usr/share/fonts/OTF"
 
     cd $srcdir
+
+    # Convert dfonts and ttc fonts
     find . -iname "*.dfont" -execdir font_conv '{}' \;
+    find . -iname "*.ttc" -execdir font_conv '{}' \;
     trcldir -o -s "\s" "_" # remove spaces from font names
-    find . \( -iname "*.tt[fc]" -o -iname "*.otf" \) -execdir chmod 644 '{}' \;
-    find . -iname "*.tt[fc]" -execdir cp '{}' "$pkgdir/usr/share/fonts/TTF" \;
+
+    # Just install ttf and otf fonts
+    find . \( -iname "*.ttf" -o -iname "*.otf" \) -execdir chmod 644 '{}' \;
+    find . -iname "*.ttf" -execdir cp '{}' "$pkgdir/usr/share/fonts/TTF" \;
     find . -iname "*.otf" -execdir cp '{}' "$pkgdir/usr/share/fonts/OTF" \;
     cd "$pkgdir/usr/share/fonts/TTF";
 

@@ -31,7 +31,7 @@ _gitbranch="master"
 
 build() {
   cd "$srcdir"
-  msg "Connecting to GIT server...."
+  msg "Connecting to GIT server....${_gitroot}"
 
   if [ -d $_gitname ] ; then
     cd $_gitname && git pull origin
